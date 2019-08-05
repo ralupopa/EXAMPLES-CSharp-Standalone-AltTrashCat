@@ -1,6 +1,6 @@
 echo "==> Start application"
 
-start "" "App\TrashCat2\TrashCat2.exe"
+start "" "App\TrashCatWindows\TrashCat.exe"
 
 echo "==> Wait for app to start"
 sleep 5
@@ -12,5 +12,5 @@ echo "==> Run tests"
 dotnet test -- xunit.parallelizeAssembly=false
 
 echo "==> Kill app"
-taskkill //PID $(tasklist | grep TrashCat2.exe | awk '{print $2}') //T //F
+taskkill //PID $(tasklist | grep TrashCat.exe | awk '{print $2}') //T //F
 
