@@ -6,9 +6,9 @@ namespace alttrashcat_tests_csharp.pages
         {
         }
     
-        public AltUnityObject GameOverButton { get => Driver.WaitForElement("Game/DeathPopup/GameOver",timeout:2); }
-        public AltUnityObject PremiumButton{get => Driver.WaitForElement("Game/DeathPopup/ButtonLayout/Premium Button",timeout:2);}
-        public AltUnityObject AvailableCurrency{get => Driver.WaitForElement("Game/DeathPopup/PremiumDisplay/PremiumOwnCount",timeout:2);}
+        public AltUnityObject GameOverButton { get => Driver.WaitForObject(By.NAME, "Game/DeathPopup/GameOver",timeout:2); }
+        public AltUnityObject PremiumButton{get => Driver.WaitForObject(By.NAME, "Game/DeathPopup/ButtonLayout/Premium Button",timeout:2);}
+        public AltUnityObject AvailableCurrency{get => Driver.WaitForObject(By.NAME, "Game/DeathPopup/PremiumDisplay/PremiumOwnCount",timeout:2);}
         
         public bool IsDisplayed(){
             if(GameOverButton!=null && PremiumButton!=null && AvailableCurrency!=null)

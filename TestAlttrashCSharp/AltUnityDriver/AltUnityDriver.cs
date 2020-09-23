@@ -1,625 +1,385 @@
-﻿using System.Numerics;
-public enum PLayerPrefKeyType { Int = 1, String, Float }
+using Assets.AltUnityTester.AltUnityDriver.Commands.InputActions;
+using Assets.AltUnityTester.AltUnityDriver.UnityStruct;
+using System;
 
+public enum PLayerPrefKeyType { Int = 1, String, Float }
+public struct SocketSettings
+{
+    public System.Net.Sockets.TcpClient socket;
+    public string requestSeparator;
+    public string requestEnding;
+    public bool logFlag;
+
+    public SocketSettings(System.Net.Sockets.TcpClient socket, string requestSeparator, string requestEnding, bool logFlag)
+    {
+        this.socket = socket;
+        this.requestSeparator = requestSeparator;
+        this.requestEnding = requestEnding;
+        this.logFlag = logFlag;
+    }
+}
 public class AltUnityDriver
 {
     public System.Net.Sockets.TcpClient Socket;
-    private static string tcp_ip = "127.0.0.1";
-    private static int tcp_port = 13000;
-    private static int BUFFER_SIZE = 1024;
+    public SocketSettings socketSettings;
+    public static readonly string VERSION = "1.5.7";
     public static string requestSeparatorString;
     public static string requestEndingString;
-    public AltUnityDriver(string tcp_ip = "127.0.0.1", int tcp_port = 13000, string requestSeparator = ";", string requestEnding = "&")
+
+    public AltUnityDriver(string tcp_ip = "127.0.0.1", int tcp_port = 13000, string requestSeparator = ";", string requestEnding = "&", bool logFlag = false)
     {
 
-        Socket = new System.Net.Sockets.TcpClient();
-        Socket.Connect(tcp_ip, tcp_port);
-        AltUnityObject.altUnityDriver = this;
-        requestSeparatorString = requestSeparator;
-        requestEndingString = requestEnding;
+        int timeout = 60;
+        int retryPeriod = 5;
+        while (timeout > 0)
+        {
+            try
+            {
+                Socket = new System.Net.Sockets.TcpClient();
+                Socket.Connect(tcp_ip, tcp_port);
+                Socket.SendTimeout = 5000;
+                Socket.ReceiveTimeout = 5000;
 
+                socketSettings = new SocketSettings(Socket, requestSeparator, requestEnding, logFlag);
+                CheckServerVersion();
+                EnableLogging();
+                break;
+            }
+            catch (System.Exception e)
+            {
+                if (Socket != null)
+                    Stop();
+                string errorMessage = "Trying to reach AltUnity Server at port" + tcp_port + ",retrying in " + retryPeriod + " (timing out in " + timeout + " secs)...";
+                System.Console.WriteLine(errorMessage);
+                timeout -= retryPeriod;
+                System.Threading.Thread.Sleep(retryPeriod * 1000);
+#if UNITY_EDITOR
+                UnityEngine.Debug.Log(errorMessage);
+#endif
+            }
+            if (timeout <= 0)
+            {
+                throw new System.Exception("Could not create connection to " + tcp_ip + ":" + tcp_port);
+            }
+        }
+
+    }
+
+    internal object FindObjectsWhichContain(string v)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal AltUnityObject FindObject(string v)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string CheckServerVersion()
+    {
+        return new AltUnityCheckServerVersion(socketSettings).Execute();
+    }
+    private void EnableLogging()
+    {
+        new AltUnityEnableLogging(socketSettings).Execute();
     }
 
     public void Stop()
     {
-        Socket.Client.Send(toBytes(CreateCommand("closeConnection")));
-        System.Threading.Thread.Sleep(1000);
-        Socket.Close();
-
-
-
-
+        new AltUnityStopCommand(socketSettings).Execute();
     }
-    public string CreateCommand(params string[] arguments)
+    public void LoadScene(string scene, bool loadSingle = true)
     {
-        string command = "";
-        foreach(var argument in arguments)
-        {
-            command += argument + requestSeparatorString;
-        }
-        command += requestEndingString;
-        return command;
+        new AltUnityLoadScene(socketSettings, scene, loadSingle).Execute();
     }
-    public string Recvall()
+    public System.Collections.Generic.List<string> GetAllLoadedScenes()
     {
-
-        string data = "";
-        string previousPart = "";
-        while (true)
-        {
-            var bytesReceived = new byte[BUFFER_SIZE];
-            Socket.Client.Receive(bytesReceived);
-            string part = fromBytes(bytesReceived);
-            string partToSeeAltEnd = previousPart + part;
-            data += part;
-            if (partToSeeAltEnd.Contains("::altend"))
-                break;
-            previousPart = part;
-        }
-
-        try
-        {
-            string[] start = new string[] { "altstart::" };
-            string[] end = new string[] { "::altend" };
-            data = data.Split(start, System.StringSplitOptions.None)[1].Split(end, System.StringSplitOptions.None)[0];
-        }
-        catch (System.Exception)
-        {
-            UnityEngine.Debug.Log("Data received from socket doesn't have correct start and end control strings");
-        }
-
-        return data;
+        return new AltUnityGetAllLoadedScenes(socketSettings).Execute();
     }
-
-    private byte[] toBytes(string text)
+    [System.Obsolete()]
+    public System.Collections.Generic.List<AltUnityObject> FindObjects(By by, string value, string cameraName, bool enabled = true)
     {
-        return System.Text.Encoding.ASCII.GetBytes(text);
+        return new AltUnityFindObjects(socketSettings, by, value, By.NAME, cameraName, enabled).Execute();
     }
-
-    private string fromBytes(byte[] text)
+    public System.Collections.Generic.List<AltUnityObject> FindObjects(By by, string value, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true)
     {
-        return System.Text.Encoding.ASCII.GetString(text);
+        return new AltUnityFindObjects(socketSettings, by, value, cameraBy, cameraPath, enabled).Execute();
     }
-
-    public void LoadScene(string scene)
+    [System.Obsolete()]
+    public System.Collections.Generic.List<AltUnityObject> FindObjectsWhichContain(By by, string value, string cameraName, bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("loadScene",scene)));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
+        return new AltUnityFindObjectsWhichContain(socketSettings, by, value, By.NAME, cameraName, enabled).Execute();
+    }
+    public System.Collections.Generic.List<AltUnityObject> FindObjectsWhichContain(By by, string value, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true)
+    {
+        return new AltUnityFindObjectsWhichContain(socketSettings, by, value, cameraBy, cameraPath, enabled).Execute();
+    }
+    [System.Obsolete()]
+    public AltUnityObject FindObject(By by, string value, string cameraName, bool enabled = true)
+    {
+        return new AltUnityFindObject(socketSettings, by, value, By.NAME, cameraName, enabled).Execute();
+    }
+    public AltUnityObject FindObject(By by, string value, By cameraBy = By.NAME, string cameraValue = "", bool enabled = true)
+    {
+        return new AltUnityFindObject(socketSettings, by, value, cameraBy, cameraValue, enabled).Execute();
+    }
+    [System.Obsolete()]
+    public AltUnityObject FindObjectWhichContains(By by, string value, string cameraName, bool enabled = true)
+    {
+        return new AltUnityFindObjectWhichContains(socketSettings, by, value, By.NAME, cameraName, enabled).Execute();
+    }
+    public AltUnityObject FindObjectWhichContains(By by, string value, By cameraBy = By.NAME, string cameraValue = "", bool enabled = true)
+    {
+        return new AltUnityFindObjectWhichContains(socketSettings, by, value, cameraBy, cameraValue, enabled).Execute();
     }
 
     public void SetTimeScale(float timeScale)
     {
-        Socket.Client.Send(toBytes(CreateCommand("setTimeScale", Newtonsoft.Json.JsonConvert.SerializeObject(timeScale))));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
+        new AltUnitySetTimeScale(socketSettings, timeScale).Execute();
     }
-
     public float GetTimeScale()
     {
-        Socket.Client.Send(toBytes(CreateCommand("getTimeScale")));
-        var data = Recvall();
-        if (!data.Contains("error"))
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<float>(data);
-        HandleErrors(data);
-        return -1f;
+        return new AltUnityGetTimeScale(socketSettings).Execute();
     }
-
     public string CallStaticMethods(string typeName, string methodName,
         string parameters, string typeOfParameters = "", string assemblyName = "")
     {
-        string actionInfo =
-            Newtonsoft.Json.JsonConvert.SerializeObject(new AltUnityObjectAction(typeName, methodName, parameters, typeOfParameters, assemblyName));
-        Socket.Client.Send(toBytes(CreateCommand("callComponentMethodForObject","",actionInfo)));
-        var data = Recvall();
-        if (!data.Contains("error:")) return data;
-        HandleErrors(data);
-        return null;
+        return new AltUnityCallStaticMethods(socketSettings, typeName, methodName, parameters, typeName, assemblyName).Execute();
     }
     public void DeletePlayerPref()
     {
-        Socket.Client.Send(toBytes(CreateCommand("deletePlayerPref")));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityDeletePlayerPref(socketSettings).Execute();
     }
     public void DeleteKeyPlayerPref(string keyName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("deleteKeyPlayerPref" , keyName )));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityDeleteKeyPlayerPref(socketSettings, keyName).Execute();
     }
     public void SetKeyPlayerPref(string keyName, int valueName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("setKeyPlayerPref", keyName , valueName.ToString() , PLayerPrefKeyType.Int.ToString() )));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-
-        HandleErrors(data);
-
-
+        new AltUnitySetKeyPLayerPref(socketSettings, keyName, valueName).Execute();
     }
     public void SetKeyPlayerPref(string keyName, float valueName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("setKeyPlayerPref", keyName , valueName.ToString(),PLayerPrefKeyType.Float.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnitySetKeyPLayerPref(socketSettings, keyName, valueName).Execute();
     }
     public void SetKeyPlayerPref(string keyName, string valueName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("setKeyPlayerPref", keyName , valueName.ToString(), PLayerPrefKeyType.String.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnitySetKeyPLayerPref(socketSettings, keyName, valueName).Execute();
     }
-    public int GetIntKeyPlayerPref(string keyname)
+    public int GetIntKeyPlayerPref(string keyName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("getKeyPlayerPref", keyname, PLayerPrefKeyType.Int.ToString())));
-        var data = Recvall();
-        if (!data.Contains("error:")) return System.Int32.Parse(data);
-        HandleErrors(data);
-        return 0;
-
+        return new AltUnityGetIntKeyPLayerPref(socketSettings, keyName).Execute();
     }
-    public float GetFloatKeyPlayerPref(string keyname)
+    public float GetFloatKeyPlayerPref(string keyName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("getKeyPlayerPref" , keyname , PLayerPrefKeyType.Float.ToString())));
-        var data = Recvall();
-        if (!data.Contains("error:")) return System.Single.Parse(data);
-        HandleErrors(data);
-        return 0;
-
+        return new AltUnityGetFloatKeyPlayerPref(socketSettings, keyName).Execute();
     }
-    public string GetStringKeyPlayerPref(string keyname)
+    public string GetStringKeyPlayerPref(string keyName)
     {
-        Socket.Client.Send(toBytes(CreateCommand("getKeyPlayerPref" ,keyname , PLayerPrefKeyType.String.ToString())));
-        var data = Recvall();
-        if (!data.Contains("error:")) return data;
-        HandleErrors(data);
-        return null;
-
+        return new AltUnityGetStringKeyPlayerPref(socketSettings, keyName).Execute();
     }
-
     public string GetCurrentScene()
     {
-
-        Socket.Client.Send(toBytes(CreateCommand("getCurrentScene")));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<AltUnityObject>(data).name;
-        HandleErrors(data);
-        return null;
+        return new AltUnityGetCurrentScene(socketSettings).Execute();
     }
-
-
-    public void Swipe(Vector2 start, Vector2 end, float duration)
+    public void Swipe(AltUnityVector2 start, AltUnityVector2 end, float duration)
     {
-        string vectorStartJson = Newtonsoft.Json.JsonConvert.SerializeObject(start, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings
-        {
-            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-        });
-        string vectorEndJson = Newtonsoft.Json.JsonConvert.SerializeObject(end, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings
-        {
-            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-        });
-        Socket.Client.Send(toBytes(CreateCommand("movingTouch" ,vectorStartJson,vectorEndJson,duration.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
+        new AltUnitySwipe(socketSettings, start, end, duration).Execute();
     }
-    public void SwipeAndWait(Vector2 start, Vector2 end, float duration)
+    public void SwipeAndWait(AltUnityVector2 start, AltUnityVector2 end, float duration)
     {
-        Swipe(start, end, duration);
-        System.Threading.Thread.Sleep((int)duration * 1000);
-        string data;
-        do
-        {
-            Socket.Client.Send(toBytes(CreateCommand("actionFinished")));
-            data = Recvall();
-        } while (data == "No");
-        if (data.Equals("Yes"))
-            return;
-        HandleErrors(data);
+        new AltUnitySwipeAndWait(socketSettings, start, end, duration).Execute();
     }
-    public void HoldButton(Vector2 position, float duration)
+    public void MultipointSwipe(AltUnityVector2[] positions, float duration)
+    {
+        new AltUnityMultipointSwipe(socketSettings, positions, duration).Execute();
+    }
+    public void MultipointSwipeAndWait(AltUnityVector2[] positions, float duration)
+    {
+        new AltUnityMultipointSwipeAndWait(socketSettings, positions, duration).Execute();
+    }
+    public void HoldButton(AltUnityVector2 position, float duration)
     {
         Swipe(position, position, duration);
     }
-
-    public void HoldButtonAndWait(Vector2 position, float duration)
+    public void HoldButtonAndWait(AltUnityVector2 position, float duration)
     {
         SwipeAndWait(position, position, duration);
     }
-    public void PressKey(UnityEngine.KeyCode keyCode,float power=1, float duration = 1)
+    public void PressKey(Assets.AltUnityTester.AltUnityDriver.UnityStruct.AltUnityKeyCode keyCode, float power = 1, float duration = 1)
     {
-        Socket.Client.Send(toBytes(CreateCommand("pressKeyboardKey", keyCode.ToString(),power.ToString(), duration.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
+        new AltUnityPressKey(socketSettings, keyCode, power, duration).Execute();
     }
-    public void PressKeyAndWait(UnityEngine.KeyCode keyCode,float power=1, float duration = 1)
+    public void PressKeyAndWait(Assets.AltUnityTester.AltUnityDriver.UnityStruct.AltUnityKeyCode keyCode, float power = 1, float duration = 1)
     {
-        PressKey(keyCode, power, duration);
-        System.Threading.Thread.Sleep((int)duration * 1000);
-        string data;
-        do
-        {
-            Socket.Client.Send(toBytes(CreateCommand("actionFinished")));
-            data = Recvall();
-        } while (data == "No");
-        if (data.Equals("Yes"))
-            return;
-        HandleErrors(data);
+        new AltUnityPressKeyAndWait(socketSettings, keyCode, power, duration).Execute();
     }
-    public void MoveMouse(Vector2 location,float duration=0)
+    public void MoveMouse(AltUnityVector2 location, float duration = 0)
     {
-        string locationJson = Newtonsoft.Json.JsonConvert.SerializeObject(location, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings
-        {
-            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-        });
-        Socket.Client.Send(toBytes(CreateCommand("moveMouse", locationJson.ToString(), duration.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityMoveMouse(socketSettings, location, duration).Execute();
     }
 
-    public void MoveMouseAndWait(Vector2 location, float duration = 0)
+    public void MoveMouseAndWait(AltUnityVector2 location, float duration = 0)
     {
-        MoveMouse(location, duration);
-        System.Threading.Thread.Sleep((int)duration * 1000);
-        string data;
-        do
-        {
-            Socket.Client.Send(toBytes(CreateCommand("actionFinished")));
-            data = Recvall();
-        } while (data == "No");
-        if (data.Equals("Yes"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityMoveMouseAndWait(socketSettings, location, duration).Execute();
     }
 
     public void ScrollMouse(float speed, float duration = 0)
     {
-        
-        Socket.Client.Send(toBytes(CreateCommand("scrollMouse", speed.ToString(), duration.ToString())));
-        var data = Recvall();
-        if (data.Equals("Ok"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityScrollMouse(socketSettings, speed, duration).Execute();
     }
-
     public void ScrollMouseAndWait(float speed, float duration = 0)
     {
-        ScrollMouse(speed, duration);
-        System.Threading.Thread.Sleep((int)duration * 1000);
-        string data;
-        do
-        {
-            Socket.Client.Send(toBytes(CreateCommand("actionFinished")));
-            data = Recvall();
-        } while (data == "No");
-        if (data.Equals("Yes"))
-            return;
-        HandleErrors(data);
-
+        new AltUnityScrollMouseAndWait(socketSettings, speed, duration).Execute();
     }
     public AltUnityObject TapScreen(float x, float y)
     {
-        Socket.Client.Send(toBytes(CreateCommand("tapScreen", x.ToString(), y.ToString() )));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<AltUnityObject>(data);
-        if (data.Contains("error:notFound")) return null;
-        HandleErrors(data);
-        return null;
+        return new AltUnityTapScreen(socketSettings, x, y).Execute();
     }
-    
-
-    public void Tilt(Vector3 acceleration)
+    public void TapCustom(float x, float y, int count, float interval = 0.1f)
     {
-        string accelerationString = Newtonsoft.Json.JsonConvert.SerializeObject(acceleration, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings
-        {
-            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-        });
-        Socket.Client.Send(toBytes(CreateCommand("tilt",accelerationString)));
-        string data = Recvall();
-        if (data.Equals("OK")) return;
-        HandleErrors(data);
-
-
+        new AltUnityTapCustom(socketSettings, x, y, count, interval).Execute();
     }
-
+    public void Tilt(AltUnityVector3 acceleration, float duration = 0)
+    {
+        new AltUnityTilt(socketSettings, acceleration, duration).Execute();
+    }
+    public void TiltAndWait(AltUnityVector3 acceleration, float duration = 0)
+    {
+        new AltUnityTiltAndWait(socketSettings, acceleration, duration).Execute();
+    }
+    [System.ObsoleteAttribute("Use instead FindObjectWhichContains")]
     public AltUnityObject FindElementWhereNameContains(string name, string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectWhereNameContains",name,cameraName,enabled.ToString() )));
-        string data = Recvall();
-        if (!data.Contains("error:"))
-        {
-            AltUnityObject altElement = Newtonsoft.Json.JsonConvert.DeserializeObject<AltUnityObject>(data);
-            if (altElement.name.Contains(name))
-            {
-                return altElement;
-            }
-        }
-        HandleErrors(data);
-        return null;
-
+        return new AltUnityFindElementWhereNameContains(socketSettings, name, cameraName, enabled).Execute();
     }
-
-    public System.Collections.Generic.List<AltUnityObject> GetAllElements(string cameraName = "", bool enabled = true)
+    [System.Obsolete()]
+    public System.Collections.Generic.List<AltUnityObject> GetAllElements(string cameraName, bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findAllObjects",cameraName,enabled.ToString())));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<AltUnityObject>>(data);
-        HandleErrors(data);
-        return null;
-
+        return new AltUnityGetAllElements(socketSettings, By.NAME, cameraName, enabled).Execute();
     }
-
+    public System.Collections.Generic.List<AltUnityObject> GetAllElements(By cameraBy = By.NAME, string cameraPath = "", bool enabled = true)
+    {
+        return new AltUnityGetAllElements(socketSettings, cameraBy, cameraPath, enabled).Execute();
+    }
+    [System.ObsoleteAttribute("Use instead FindObject")]
     public AltUnityObject FindElement(string name, string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectByName",name,cameraName,enabled.ToString())));
-        string data = Recvall();
-        if (!data.Contains("error:"))
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<AltUnityObject>(data);
-
-        }
-        HandleErrors(data);
-        return null;
+        return new AltUnityFindElement(socketSettings, name, cameraName, enabled).Execute();
     }
-
+    [System.ObsoleteAttribute("Use instead WaitForObject")]
     public System.Collections.Generic.List<AltUnityObject> FindElements(string name, string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectsByName", name, cameraName, enabled.ToString())));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<AltUnityObject>>(data);
-        HandleErrors(data);
-        return null;
+        return new AltUnityFindElements(socketSettings, name, cameraName, enabled).Execute();
     }
 
+    [System.ObsoleteAttribute("Use instead WaitForObjectWhichContains")]
     public System.Collections.Generic.List<AltUnityObject> FindElementsWhereNameContains(string name, string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectsWhereNameContains",name ,cameraName ,enabled.ToString() )));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<AltUnityObject>>(data);
-        HandleErrors(data);
-        return null;
+        return new AltUnityFindElementsWhereNameContains(socketSettings, name, cameraName, enabled).Execute();
     }
-
-
-
     public string WaitForCurrentSceneToBe(string sceneName, double timeout = 10, double interval = 1)
     {
-        double time = 0;
-        string currentScene = "";
-        while (time < timeout)
-        {
-            currentScene = GetCurrentScene();
-            if (!currentScene.Equals(sceneName))
-            {
-                UnityEngine.Debug.Log("Waiting for scene to be " + sceneName + "...");
-                System.Threading.Thread.Sleep(System.Convert.ToInt32(interval * 1000));
-                time += interval;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        if (sceneName.Equals(currentScene))
-            return currentScene;
-        throw new Assets.AltUnityTester.AltUnityDriver.WaitTimeOutException("Scene " + sceneName + " not loaded after " + timeout + " seconds");
-
+        return new AltUnityWaitForCurrentSceneToBe(socketSettings, sceneName, timeout, interval).Execute();
     }
 
+    [System.ObsoleteAttribute("Use instead WaitForObject")]
     public AltUnityObject WaitForElementWhereNameContains(string name, string cameraName = "", bool enabled = true, double timeout = 20, double interval = 0.5)
     {
-        double time = 0;
-        AltUnityObject altElement = null;
-        while (time < timeout)
-        {
-            try
-            {
-                altElement = FindElementWhereNameContains(name, cameraName, enabled);
-                break;
-            }
-            catch (System.Exception)
-            {
-                UnityEngine.Debug.Log("Waiting for element where name contains " + name + "....");
-                System.Threading.Thread.Sleep(System.Convert.ToInt32(interval * 1000));
-                time += interval;
-            }
-        }
-        if (altElement != null)
-            return altElement;
-        throw new Assets.AltUnityTester.AltUnityDriver.WaitTimeOutException("Element " + name + " still not found after " + timeout + " seconds");
-
+        return new AltUnityWaitForElementWhereNameContains(socketSettings, name, cameraName, enabled, timeout, interval).Execute();
+    }
+    [System.Obsolete()]
+    public AltUnityObject WaitForObject(By by, string value, string cameraName, bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObject(socketSettings, by, value, By.NAME, cameraName, enabled, timeout, interval).Execute();
+    }
+    public AltUnityObject WaitForObject(By by, string value, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObject(socketSettings, by, value, cameraBy, cameraPath, enabled, timeout, interval).Execute();
+    }
+    [System.Obsolete()]
+    public void WaitForObjectNotBePresent(By by, string value, string cameraName, bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        new AltUnityWaitForObjectNotBePresent(socketSettings, by, value, By.NAME, cameraName, enabled, timeout, interval).Execute();
+    }
+    public void WaitForObjectNotBePresent(By by, string value, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        new AltUnityWaitForObjectNotBePresent(socketSettings, by, value, cameraBy, cameraPath, enabled, timeout, interval).Execute();
+    }
+    [System.Obsolete()]
+    public AltUnityObject WaitForObjectWhichContains(By by, string value, string cameraName, bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObjectWhichContains(socketSettings, by, value, By.NAME, cameraName, enabled, timeout, interval).Execute();
+    }
+    public AltUnityObject WaitForObjectWhichContains(By by, string value, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObjectWhichContains(socketSettings, by, value, cameraBy, cameraPath, enabled, timeout, interval).Execute();
     }
 
 
-
+    [System.ObsoleteAttribute("Use instead WaitForObjectNotBePresent")]
     public void WaitForElementToNotBePresent(string name, string cameraName = "", bool enabled = true, double timeout = 20, double interval = 0.5)
     {
-        double time = 0;
-        bool found = false; 
-        AltUnityObject altElement = null;
-        while (time <= timeout)
-        {
-            found = false;
-            try
-            {
-                altElement = FindElement(name, cameraName, enabled);
-                found = true;
-                System.Threading.Thread.Sleep(System.Convert.ToInt32(interval * 1000));
-                time += interval;
-                UnityEngine.Debug.Log("Waiting for element " + name + " to not be present");
-            }
-            catch (System.Exception)
-            {
-                break;
-            }
-
-        }
-
-        if (found)
-            throw new Assets.AltUnityTester.AltUnityDriver.WaitTimeOutException("Element " + name + " still found after " + timeout + " seconds");
+        new AltUnityWaitForElementToNotBePresent(socketSettings, name, cameraName, enabled, timeout, interval).Execute();
     }
-
-
-
-    public AltUnityObject WaitForElement(string name, string cameraName = "",bool enabled=true, double timeout = 20, double interval = 0.5)
+    [System.ObsoleteAttribute("Use instead WaitForObject")]
+    public AltUnityObject WaitForElement(string name, string cameraName = "", bool enabled = true, double timeout = 20, double interval = 0.5)
     {
-        double time = 0;
-        AltUnityObject altElement = null;
-        while (time < timeout)
-        {
-            try
-            {
-                altElement = FindElement(name, cameraName,enabled);
-                break;
-            }
-            catch (System.Exception)
-            {
-                System.Threading.Thread.Sleep(System.Convert.ToInt32(interval * 1000));
-                time += interval;
-                //UnityEngine.Debug.Log("Waiting for element " + name + "...");
-            }
-
-        }
-
-        if (altElement != null)
-        {
-            return altElement;
-        }
-        throw new Assets.AltUnityTester.AltUnityDriver.WaitTimeOutException("Element " + name + " not loaded after " + timeout + " seconds");
+        return new AltUnityWaitForElement(socketSettings, name, cameraName, enabled, timeout, interval).Execute();
     }
 
-
-    public AltUnityObject WaitForElementWithText(string name, string text, string cameraName = "",bool enabled=true, double timeout = 20, double interval = 0.5)
+    [System.ObsoleteAttribute("Use instead WaitForObjectWithText")]
+    public AltUnityObject WaitForElementWithText(string name, string text, string cameraName = "", bool enabled = true, double timeout = 20, double interval = 0.5)
     {
-        double time = 0;
-        AltUnityObject altElement = null;
-        while (time < timeout)
-        {
-            try
-            {
-                altElement = FindElement(name, cameraName,enabled);
-                if (altElement.GetText().Equals(text))
-                    break;
-                throw new System.Exception("Not the wanted text");
-            }
-            catch (System.Exception)
-            {
-                System.Threading.Thread.Sleep(System.Convert.ToInt32(interval * 1000));
-                time += interval;
-                UnityEngine.Debug.Log("Waiting for element " + name + " to have text " + text);
-            }
-        }
-        if (altElement != null && altElement.GetText().Equals(text))
-        {
-            return altElement;
-        }
-        throw new Assets.AltUnityTester.AltUnityDriver.WaitTimeOutException("Element with text: " + text + " not loaded after " + timeout + " seconds");
+        return new AltUnityWaitForElementWithText(socketSettings, name, text, cameraName, enabled, timeout, interval).Execute();
     }
-
+    [System.Obsolete()]
+    public AltUnityObject WaitForObjectWithText(By by, string value, string text, string cameraName, bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObjectWithText(socketSettings, by, value, text, By.NAME, cameraName, enabled, timeout, interval).Execute();
+    }
+    public AltUnityObject WaitForObjectWithText(By by, string value, string text, By cameraBy = By.NAME, string cameraPath = "", bool enabled = true, double timeout = 20, double interval = 0.5)
+    {
+        return new AltUnityWaitForObjectWithText(socketSettings, by, value, text, cameraBy, cameraPath, enabled, timeout, interval).Execute();
+    }
+    [System.ObsoleteAttribute("Use instead FindObject")]
     public AltUnityObject FindElementByComponent(string componentName, string assemblyName = "", string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectByComponent",assemblyName,componentName,cameraName,enabled.ToString() )));
-        string data = Recvall();
-        if (!data.Contains("error:"))
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<AltUnityObject>(data);
-        }
-        HandleErrors(data);
-        return null;
+        return new AltUnityFindElementByComponent(socketSettings, componentName, assemblyName, cameraName, enabled).Execute();
     }
-  
+    [System.ObsoleteAttribute("Use instead FindObjects")]
     public System.Collections.Generic.List<AltUnityObject> FindElementsByComponent(string componentName, string assemblyName = "", string cameraName = "", bool enabled = true)
     {
-        Socket.Client.Send(toBytes(CreateCommand("findObjectsByComponent", assemblyName, componentName, cameraName, enabled.ToString())));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<AltUnityObject>>(data);
-        HandleErrors(data);
-        return null;
+        return new AltUnityFindElementsByComponent(socketSettings, componentName, assemblyName, cameraName, enabled).Execute();
     }
-
     public System.Collections.Generic.List<string> GetAllScenes()
     {
-        Socket.Client.Send(toBytes(CreateCommand("getAllScenes")));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<string>>(data);
-        HandleErrors(data);
-        return null;
+        return new AltUnityGetAllScenes(socketSettings).Execute();
     }
-    
-    public System.Collections.Generic.List<string> GetAllCameras()
+    public System.Collections.Generic.List<AltUnityObject> GetAllCameras()
     {
-        Socket.Client.Send(toBytes(CreateCommand("getAllCameras")));
-        string data = Recvall();
-        if (!data.Contains("error:")) return Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<string>>(data);
-        HandleErrors(data);
-        return null;
+        return new AltUnityGetAllCameras(socketSettings).Execute();
     }
-
-    public static void HandleErrors(string data)
+    public AltUnityTextureInformation GetScreenshot(AltUnityVector2 size = default(AltUnityVector2))
     {
-
-        var typeOfException = data.Split(';')[0];
-        switch (typeOfException)
-        {
-            case "error:notFound":
-                throw new Assets.AltUnityTester.AltUnityDriver.NotFoundException(data);
-            case "error:propertyNotFound":
-                throw new Assets.AltUnityTester.AltUnityDriver.PropertyNotFoundException(data);
-            case "error:methodNotFound":
-                throw new Assets.AltUnityTester.AltUnityDriver.MethodNotFoundException(data);
-            case "error:componentNotFound":
-                throw new Assets.AltUnityTester.AltUnityDriver.ComponentNotFoundException(data);
-            case "error:couldNotPerformOperation":
-                throw new Assets.AltUnityTester.AltUnityDriver.CouldNotPerformOperationException(data);
-            case "error:couldNotParseJsonString":
-                throw new Assets.AltUnityTester.AltUnityDriver.CouldNotParseJsonStringException(data);
-            case "error:incorrectNumberOfParameters":
-                throw new Assets.AltUnityTester.AltUnityDriver.IncorrectNumberOfParametersException(data);
-            case "error:failedToParseMethodArguments":
-                throw new Assets.AltUnityTester.AltUnityDriver.FailedToParseArgumentsException(data);
-            case "error:objectNotFound":
-                throw new Assets.AltUnityTester.AltUnityDriver.ObjectWasNotFoundException(data);
-            case "error:propertyCannotBeSet":
-                throw new Assets.AltUnityTester.AltUnityDriver.PropertyNotFoundException(data);
-            case "error:nullRefferenceException":
-                throw new Assets.AltUnityTester.AltUnityDriver.NullRefferenceException(data);
-            case "error:unknownError":
-                throw new Assets.AltUnityTester.AltUnityDriver.UnknownErrorException(data);
-            case "error:formatException":
-                throw new Assets.AltUnityTester.AltUnityDriver.FormatException(data);
-        }
-
+        return new AltUnityGetScreenshot(socketSettings, size).Execute();
+    }
+    public AltUnityTextureInformation GetScreenshot(int id, Assets.AltUnityTester.AltUnityDriver.UnityStruct.AltUnityColor color, float width, AltUnityVector2 size = default(AltUnityVector2))
+    {
+        return new AltUnityGetScreenshot(socketSettings, id, color, width, size).Execute();
+    }
+    public AltUnityTextureInformation GetScreenshot(AltUnityVector2 coordinates, Assets.AltUnityTester.AltUnityDriver.UnityStruct.AltUnityColor color, float width, out AltUnityObject selectedObject, AltUnityVector2 size = default(AltUnityVector2))
+    {
+        return new AltUnityGetScreenshot(socketSettings, coordinates, color, width, size).Execute(out selectedObject);
 
     }
+    public void GetPNGScreenshot(string path)
+    {
+        new AltUnityGetPNGScreenshot(socketSettings, path).Execute();
+    }
 
-
+    internal AltUnityObject WaitForObject(string v, int timeout)
+    {
+        throw new NotImplementedException();
+    }
 }
-
-
