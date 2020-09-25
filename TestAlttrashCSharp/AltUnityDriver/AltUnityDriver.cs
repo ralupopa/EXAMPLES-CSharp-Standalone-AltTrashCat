@@ -26,7 +26,7 @@ public class AltUnityDriver
     public static string requestSeparatorString;
     public static string requestEndingString;
 
-    public AltUnityDriver(string tcp_ip = "127.0.0.1", int tcp_port = 13000, string requestSeparator = ";", string requestEnding = "&", bool logFlag = false)
+    public AltUnityDriver(string tcp_ip = "192.168.0.101", int tcp_port = 13000, string requestSeparator = ";", string requestEnding = "&", bool logFlag = false)
     {
 
         int timeout = 60;
