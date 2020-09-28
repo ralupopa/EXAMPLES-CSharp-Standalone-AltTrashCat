@@ -21,8 +21,6 @@ run-mac-standalone-csharp-tests:
     - when: always
   tags:
     - mac
-    - unity
-    - xcode
   script:
     - sh start_tests_Mac.sh
   artifacts:
