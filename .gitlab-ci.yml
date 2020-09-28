@@ -7,13 +7,14 @@ run-windows-standalone-csharp-tests:
     - when: always
   tags:
     - windows
+    - unity
   script:
     - sh start_tests_Windows.sh
   artifacts:
     when: always
     expire_in: 10 days
     paths:
-      - AltUnityTesterLogs.log
+      - bin/Debug/netcoreapp2.1/AltUnityTesterLog.txt
 
 run-mac-standalone-csharp-tests:
   stage: test
@@ -21,10 +22,12 @@ run-mac-standalone-csharp-tests:
     - when: always
   tags:
     - mac
+    - unity
+    - xcode
   script:
     - sh start_tests_Mac.sh
   artifacts:
     when: always
     expire_in: 10 days
     paths:
-      - AltUnityTesterLogs.log
+      - bin/Debug/netcoreapp2.1/AltUnityTesterLog.txt
