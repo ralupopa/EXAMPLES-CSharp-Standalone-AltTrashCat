@@ -18,6 +18,7 @@ public struct SocketSettings
         this.logFlag = logFlag;
     }
 }
+
 public class AltUnityDriver
 {
     public System.Net.Sockets.TcpClient Socket;
