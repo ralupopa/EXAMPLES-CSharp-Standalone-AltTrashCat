@@ -9,3 +9,5 @@ dotnet test
 
 echo "==>Kill app"
 killall TrashCat
+
+launchctl list
