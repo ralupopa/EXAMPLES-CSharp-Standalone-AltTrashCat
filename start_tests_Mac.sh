@@ -1,3 +1,5 @@
+top
+
 echo "==>Kill previous build"
 npx kill-port 13000
 
