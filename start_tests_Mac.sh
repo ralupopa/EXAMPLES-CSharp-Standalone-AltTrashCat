@@ -1,5 +1,5 @@
 echo "==>Kill previous build"
-kill-port 13000
+npx kill-port 13000
 
 echo "==> Open application"
 open App/TrashCatMac/TrashCat.app/
