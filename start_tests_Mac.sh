@@ -1,5 +1,5 @@
 "==> Kill previous build"
-killall trashcatbuild
+killall alttrashcatbuild
 
 echo "==> Open application"
 open App/TrashCatMac/TrashCat.app/
