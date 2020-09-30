@@ -1,3 +1,5 @@
+top
+
 echo "==> Open application"
 open App/TrashCatMac/TrashCat.app/
 echo "==>Wait for application to start"
