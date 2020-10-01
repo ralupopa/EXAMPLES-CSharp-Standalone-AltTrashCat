@@ -87,7 +87,7 @@ namespace alttrashcat_tests_csharp.pages
                 }
                 while(character.worldZ-3<obstacle.worldZ && character.worldX<99){
                     obstacle=Driver.FindObject(By.ID, obstacle.id.ToString());
-                    character=Driver.FindObject(By.NAME, "/PlayerPivot");
+                    character=Driver.FindObject(By.NAME, "PlayerPivot");
                 }
                 if(movedRight){
                     Driver.PressKey(AltUnityKeyCode.LeftArrow, 0, 0);
