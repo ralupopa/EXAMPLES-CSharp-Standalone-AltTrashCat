@@ -14,7 +14,7 @@ run-windows-standalone-csharp-tests:
     when: always
     expire_in: 10 days
     paths:
-      - bin/Debug/netcoreapp2.1/AltUnityTesterLog.txt
+      - /bin/Debug/netcoreapp2.1/AltUnityTesterLog.txt
 
 run-mac-standalone-csharp-tests:
   stage: test
