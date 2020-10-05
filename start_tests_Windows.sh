@@ -6,9 +6,7 @@ echo "==> Wait for app to start"
 sleep 5
 cd TestAlttrashCSharp
 
-echo "==> Restore test project"
-dotnet restore
-echo "==> Run tests"
+echo "==> Restore test project and run tests"
 dotnet test -- xunit.parallelizeAssembly=false
 
 echo "==> Kill app"

@@ -4,9 +4,7 @@ echo "==>Wait for application to start"
 sleep 3
 
 cd TestAlttrashCSharp
-echo "==>Restore test project"
-dotnet restore
-echo "==>Run tests"
+echo "==>Restore test project and run tests"
 dotnet test
 
 echo "==>Kill app"
