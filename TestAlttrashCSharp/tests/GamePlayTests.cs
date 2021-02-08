@@ -1,11 +1,12 @@
-using  alttrashcat_tests_csharp.pages;
+using Altom.AltUnityDriver;
+using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
 using Xunit;
 
 namespace alttrashcat_tests_csharp.tests
 {
-    public class GamePlayTests:IDisposable
+    public class GamePlayTests : IDisposable
     {
         AltUnityDriver altUnityDriver;
         MainMenuPage mainMenuPage;
@@ -15,47 +16,55 @@ namespace alttrashcat_tests_csharp.tests
         public GamePlayTests()
         {
 
-            altUnityDriver=new AltUnityDriver();
-            mainMenuPage=new MainMenuPage(altUnityDriver);
+            altUnityDriver = new AltUnityDriver();
+            mainMenuPage = new MainMenuPage(altUnityDriver);
             mainMenuPage.LoadScene();
             mainMenuPage.PressRun();
-            gamePlayPage=new GamePlay(altUnityDriver);
-            pauseOverlayPage=new PauseOverlayPage(altUnityDriver);
-            getAnotherChancePage=new GetAnotherChancePage(altUnityDriver);
+            gamePlayPage = new GamePlay(altUnityDriver);
+            pauseOverlayPage = new PauseOverlayPage(altUnityDriver);
+            getAnotherChancePage = new GetAnotherChancePage(altUnityDriver);
 
         }
         [Fact]
-        public void TestGamePlayDisplayedCorrectly(){
+        public void TestGamePlayDisplayedCorrectly()
+        {
             Assert.True(gamePlayPage.IsDisplayed());
         }
         [Fact]
-        public void TestGameCanBePausedAndResumed(){
+        public void TestGameCanBePausedAndResumed()
+        {
             gamePlayPage.PressPause();
             Assert.True(pauseOverlayPage.IsDisplayed());
             pauseOverlayPage.PressResume();
             Assert.True(gamePlayPage.IsDisplayed());
         }
         [Fact]
-        public void TestGameCanBePausedAndStopped(){
+        public void TestGameCanBePausedAndStopped()
+        {
             gamePlayPage.PressPause();
             pauseOverlayPage.PressMainMenu();
             Assert.True(mainMenuPage.IsDisplayed());
         }
         [Fact]
-        public void TestAvoidingObstacles(){
+        public void TestAvoidingObstacles()
+        {
             gamePlayPage.AvoidObstacles(10);
-            Assert.True(gamePlayPage.GetCurrentLife()>0);
+            Assert.True(gamePlayPage.GetCurrentLife() > 0);
         }
         [Fact]
-        public void TestPlayerDiesWhenObstacleNotAvoided(){
-            float timeout=20;
-            while(timeout>0){
-                try{
+        public void TestPlayerDiesWhenObstacleNotAvoided()
+        {
+            float timeout = 20;
+            while (timeout > 0)
+            {
+                try
+                {
                     getAnotherChancePage.IsDisplayed();
                     break;
                 }
-                catch (Exception){
-                    timeout-=1;
+                catch (Exception)
+                {
+                    timeout -= 1;
                 }
             }
             Assert.True(getAnotherChancePage.IsDisplayed());

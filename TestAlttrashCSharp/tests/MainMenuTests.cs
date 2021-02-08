@@ -1,10 +1,11 @@
-using  alttrashcat_tests_csharp.pages;
+using Altom.AltUnityDriver;
+using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
 using Xunit;
 namespace alttrashcat_tests_csharp.tests
 {
-    public class MainMenuTests:IDisposable
+    public class MainMenuTests : IDisposable
     {
         AltUnityDriver altUnityDriver;
         MainMenuPage mainMenuPage;
@@ -22,9 +23,10 @@ namespace alttrashcat_tests_csharp.tests
 
         }
 
-            
+
         [Fact]
-        public void TestMainMenuPageLoadedCorrectly(){
+        public void TestMainMenuPageLoadedCorrectly()
+        {
             Assert.True(mainMenuPage.IsDisplayed());
         }
     }

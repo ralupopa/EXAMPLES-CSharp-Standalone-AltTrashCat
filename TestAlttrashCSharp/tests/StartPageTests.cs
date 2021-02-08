@@ -1,4 +1,5 @@
-using  alttrashcat_tests_csharp.pages;
+using Altom.AltUnityDriver;
+using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
 using Xunit;
@@ -10,19 +11,22 @@ namespace alttrashcat_tests_csharp.tests
         private AltUnityDriver altUnityDriver;
         private MainMenuPage mainMenuPage;
         private StartPage startPage;
-       public StartPageTests(){
-            altUnityDriver=new AltUnityDriver();
-            startPage=new StartPage(altUnityDriver);
+        public StartPageTests()
+        {
+            altUnityDriver = new AltUnityDriver();
+            startPage = new StartPage(altUnityDriver);
             startPage.Load();
-            mainMenuPage=new MainMenuPage(altUnityDriver);
+            mainMenuPage = new MainMenuPage(altUnityDriver);
 
         }
         [Fact]
-        public void TestStartPageLoadedCorrectly(){
+        public void TestStartPageLoadedCorrectly()
+        {
             Assert.True(startPage.IsDisplayed());
         }
         [Fact]
-        public void TestStartButtonLoadMainMenu(){
+        public void TestStartButtonLoadMainMenu()
+        {
             startPage.PressStart();
             Assert.True(mainMenuPage.IsDisplayed());
         }
