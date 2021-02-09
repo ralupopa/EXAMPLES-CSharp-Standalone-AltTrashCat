@@ -5,7 +5,7 @@ https://assetstore.unity.com/packages/essentials/tutorial-projects/endless-runne
 
 ## NuGet package
 
-This projects requires to add https://www.nuget.org/packages/AltUnityDriver package in order to work.
+**This projects requires to add https://www.nuget.org/packages/AltUnityDriver package in order to work.**
 
 ### Running the tests on Windows or MacOS
 The tests are meant to be run on an Windows or MacOS device. The app is provided in this repository, under the app/ folder.
