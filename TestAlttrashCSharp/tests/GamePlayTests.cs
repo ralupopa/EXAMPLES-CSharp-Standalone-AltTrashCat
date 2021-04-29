@@ -1,7 +1,7 @@
-using Altom.AltUnityDriver;
-using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
+using Altom.AltUnityDriver;
+using alttrashcat_tests_csharp.pages;
 using Xunit;
 
 namespace alttrashcat_tests_csharp.tests
