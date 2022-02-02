@@ -2,18 +2,19 @@ using System;
 using System.Threading;
 using Altom.AltUnityDriver;
 using alttrashcat_tests_csharp.pages;
-using Xunit;
+using NUnit.Framework;
 
 namespace alttrashcat_tests_csharp.tests
 {
-    public class GamePlayTests : IDisposable
+    public class GamePlayTests
     {
         AltUnityDriver altUnityDriver;
         MainMenuPage mainMenuPage;
         GamePlay gamePlayPage;
         PauseOverlayPage pauseOverlayPage;
         GetAnotherChancePage getAnotherChancePage;
-        public GamePlayTests()
+        [SetUp]
+        public void Setup()
         {
 
             altUnityDriver = new AltUnityDriver();
@@ -25,12 +26,12 @@ namespace alttrashcat_tests_csharp.tests
             getAnotherChancePage = new GetAnotherChancePage(altUnityDriver);
 
         }
-        [Fact]
+        [Test]
         public void TestGamePlayDisplayedCorrectly()
         {
             Assert.True(gamePlayPage.IsDisplayed());
         }
-        [Fact]
+        [Test]
         public void TestGameCanBePausedAndResumed()
         {
             gamePlayPage.PressPause();
@@ -38,20 +39,20 @@ namespace alttrashcat_tests_csharp.tests
             pauseOverlayPage.PressResume();
             Assert.True(gamePlayPage.IsDisplayed());
         }
-        [Fact]
+        [Test]
         public void TestGameCanBePausedAndStopped()
         {
             gamePlayPage.PressPause();
             pauseOverlayPage.PressMainMenu();
             Assert.True(mainMenuPage.IsDisplayed());
         }
-        [Fact]
+        [Test]
         public void TestAvoidingObstacles()
         {
             gamePlayPage.AvoidObstacles(10);
             Assert.True(gamePlayPage.GetCurrentLife() > 0);
         }
-        [Fact]
+        [Test]
         public void TestPlayerDiesWhenObstacleNotAvoided()
         {
             float timeout = 20;
@@ -70,6 +71,7 @@ namespace alttrashcat_tests_csharp.tests
             Assert.True(getAnotherChancePage.IsDisplayed());
         }
 
+        [TearDown]
         public void Dispose()
         {
             altUnityDriver.Stop();
