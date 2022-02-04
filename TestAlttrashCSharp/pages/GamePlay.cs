@@ -26,7 +26,7 @@ namespace alttrashcat_tests_csharp.pages
         }
         public int GetCurrentLife()
         {
-            return Int32.Parse(Character.CallComponentMethod("CharacterInputController", "get_currentLife", ""));
+            return Character.CallComponentMethod<int>("CharacterInputController","get_currentLife",new object[] {});
         }
         public void AvoidObstacles(int numberOfObstacles)
         {

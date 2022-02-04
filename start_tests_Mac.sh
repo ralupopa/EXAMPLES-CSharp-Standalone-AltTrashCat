@@ -1,5 +1,5 @@
 echo "==> Open application"
-open App/TrashCatMac/TrashCat.app/
+open App/TrashCatMac/TrashCatTest.app
 echo "==>Wait for application to start"
 sleep 3
 

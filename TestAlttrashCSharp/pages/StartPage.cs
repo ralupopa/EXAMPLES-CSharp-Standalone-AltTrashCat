@@ -12,10 +12,10 @@ namespace alttrashcat_tests_csharp.pages
         {
             Driver.LoadScene("Start");
         }
-        public AltUnityObject StartButton { get => Driver.WaitForObject(By.NAME, "StartButton", timeout: 2); }
-        public AltUnityObject StartText { get => Driver.WaitForObject(By.NAME, "StartText", timeout: 2); }
-        public AltUnityObject LogoImage { get => Driver.WaitForObject(By.NAME, "LogoImage", timeout: 2); }
-        public AltUnityObject UnityUrlButton { get => Driver.WaitForObject(By.NAME, "UnityURLButton", timeout: 2); }
+        public AltUnityObject StartButton { get => Driver.WaitForObject(By.NAME, "StartButton", timeout: 5); }
+        public AltUnityObject StartText { get => Driver.WaitForObject(By.NAME, "StartText", timeout: 5); }
+        public AltUnityObject LogoImage { get => Driver.WaitForObject(By.NAME, "LogoImage", timeout: 5); }
+        public AltUnityObject UnityUrlButton { get => Driver.WaitForObject(By.NAME, "UnityURLButton", timeout: 5); }
         public bool IsDisplayed()
         {
             if (StartButton != null && StartText != null && LogoImage != null && UnityUrlButton != null)

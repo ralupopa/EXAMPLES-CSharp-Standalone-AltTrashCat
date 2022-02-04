@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 698051323
+CRC: 1940328772
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -9,8 +9,8 @@ AssetBundleManifest:
       Name: themes/nightime
       Dependencies: {}
     Info_2:
-      Name: characters/raccoon
+      Name: characters/cat
       Dependencies: {}
     Info_3:
-      Name: characters/cat
+      Name: characters/raccoon
       Dependencies: {}

@@ -7,7 +7,7 @@ sleep 5
 cd TestAlttrashCSharp
 
 echo "==> Restore test project and run tests"
-dotnet test -- xunit.parallelizeAssembly=false
+dotnet test  -- NUnit.TestOutputXml = "TestAlttrashCSharp"
 
 echo "==> Kill app"
 taskkill //PID $(tasklist | grep TrashCat.exe | awk '{print $2}') //T //F
