@@ -1,11 +1,11 @@
 # Standalone Build with CSharp Tests
 
-This repository shows a few C# tests that use the page object model and AltUnityTester to test the Unity endless runner sample:
+This repository shows a few C# tests that use the page object model and AltTester to test the Unity endless runner sample:
 https://assetstore.unity.com/packages/essentials/tutorial-projects/endless-runner-sample-game-87901
 
 ## NuGet package
 
-**This project already has the AltUnityDriver inside, but otherwise would require to add https://www.nuget.org/packages/AltUnityDriver package in order to work.**
+**This project already has the AltDriver inside, but otherwise would require to add https://www.nuget.org/packages/AltDriver package in order to work.**
 
 ### Running the tests on Windows or MacOS
 The tests are meant to be run on an Windows or MacOS device. The app is provided in this repository, under the app/ folder.
