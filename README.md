@@ -9,13 +9,18 @@ https://assetstore.unity.com/packages/essentials/tutorial-projects/endless-runne
 
 ### Running the tests on Windows or MacOS
 The tests are meant to be run on an Windows or MacOS device.
+Create a folder `App` under project.
 
 To start the tests, depending of your OS run:
 
 - `./start_tests_Mac.sh` on MacOS/Linux
+
+    Create a folder `TrashCatMac` under `App`.
     The app is provided at https://altom.com/app/uploads/AltTester/TrashCat/TrashCatMacOS.zip and needs to be included  unzipped under the App/TrashCatMac/ folder.
 
 - `./start_tests_Windows.sh`./start_tests_windows.sh on Windows
+
+    Create a folder `TrashCatWindows` under `App`.
     The app is provided at https://altom.com/app/uploads/AltTester/TrashCat/TrashCatWindows.zip and needs to be included  unzipped under the App/TrashCatWindows/ folder.
     
 This script will:
