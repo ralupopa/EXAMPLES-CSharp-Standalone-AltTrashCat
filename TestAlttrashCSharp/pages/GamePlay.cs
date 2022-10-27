@@ -1,16 +1,16 @@
-using Altom.AltUnityDriver;
+using Altom.AltDriver;
 using System;
 
 namespace alttrashcat_tests_csharp.pages
 {
     public class GamePlay : BasePage
     {
-        public GamePlay(AltUnityDriver driver) : base(driver)
+        public GamePlay(AltDriver driver) : base(driver)
         {
         }
 
-        public AltUnityObject PauseButton { get => Driver.WaitForObject(By.NAME, "Game/WholeUI/pauseButton", timeout: 2); }
-        public AltUnityObject Character { get => Driver.WaitForObject(By.NAME, "PlayerPivot"); }
+        public AltObject PauseButton { get => Driver.WaitForObject(By.NAME, "Game/WholeUI/pauseButton", timeout: 2); }
+        public AltObject Character { get => Driver.WaitForObject(By.NAME, "PlayerPivot"); }
 
         public bool IsDisplayed()
         {
@@ -26,7 +26,7 @@ namespace alttrashcat_tests_csharp.pages
         }
         public int GetCurrentLife()
         {
-            return Character.CallComponentMethod<int>("CharacterInputController","get_currentLife",new object[] {});
+            return Character.GetComponentProperty<int>("CharacterInputController", "currentLife", "Assembly-CSharp");
         }
         public void AvoidObstacles(int numberOfObstacles)
         {
@@ -50,13 +50,13 @@ namespace alttrashcat_tests_csharp.pages
                 }
                 if (obstacle.name.Contains("ObstacleHighBarrier"))
                 {
-                    Driver.PressKey(AltUnityKeyCode.DownArrow);
+                    Driver.PressKey(AltKeyCode.DownArrow);
                 }
                 else
                 if (obstacle.name.Contains("ObstacleLowBarrier") || obstacle.name.Contains("Rat"))
                 {
 
-                    Driver.PressKey(AltUnityKeyCode.UpArrow, 0, 0);
+                    Driver.PressKey(AltKeyCode.UpArrow, 0, 0);
                 }
                 else
                 {
@@ -66,12 +66,12 @@ namespace alttrashcat_tests_csharp.pages
                         {
                             if (allObstacles[1].worldX == -1.5f)
                             {
-                                Driver.PressKey(AltUnityKeyCode.RightArrow, 0, 0);
+                                Driver.PressKey(AltKeyCode.RightArrow, 0, 0);
                                 movedRight = true;
                             }
                             else
                             {
-                                Driver.PressKey(AltUnityKeyCode.LeftArrow, 0, 0);
+                                Driver.PressKey(AltKeyCode.LeftArrow, 0, 0);
                                 movedLeft = true;
                             }
                         }
@@ -81,12 +81,12 @@ namespace alttrashcat_tests_csharp.pages
                             {
                                 if (obstacle.worldX == -1.5f)
                                 {
-                                    Driver.PressKey(AltUnityKeyCode.RightArrow, 0, 0);
+                                    Driver.PressKey(AltKeyCode.RightArrow, 0, 0);
                                     movedRight = true;
                                 }
                                 else
                                 {
-                                    Driver.PressKey(AltUnityKeyCode.LeftArrow, 0, 0);
+                                    Driver.PressKey(AltKeyCode.LeftArrow, 0, 0);
                                     movedLeft = true;
                                 }
                             }
@@ -96,7 +96,7 @@ namespace alttrashcat_tests_csharp.pages
                     {
                         if (obstacle.worldX == character.worldX)
                         {
-                            Driver.PressKey(AltUnityKeyCode.RightArrow, 0, 0);
+                            Driver.PressKey(AltKeyCode.RightArrow, 0, 0);
                             movedRight = true;
                         }
                     }
@@ -108,12 +108,12 @@ namespace alttrashcat_tests_csharp.pages
                 }
                 if (movedRight)
                 {
-                    Driver.PressKey(AltUnityKeyCode.LeftArrow, 0, 0);
+                    Driver.PressKey(AltKeyCode.LeftArrow, 0, 0);
                     movedRight = false;
                 }
                 if (movedLeft)
                 {
-                    Driver.PressKey(AltUnityKeyCode.RightArrow, 0, 0);
+                    Driver.PressKey(AltKeyCode.RightArrow, 0, 0);
                     movedRight = false;
                 }
             }

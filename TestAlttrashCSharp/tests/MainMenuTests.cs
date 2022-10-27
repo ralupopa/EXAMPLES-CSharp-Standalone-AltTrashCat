@@ -1,4 +1,4 @@
-using Altom.AltUnityDriver;
+using Altom.AltDriver;
 using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
@@ -7,20 +7,20 @@ namespace alttrashcat_tests_csharp.tests
 {
     public class MainMenuTests
     {
-        AltUnityDriver altUnityDriver;
+        AltDriver altDriver;
         MainMenuPage mainMenuPage;
         [SetUp]
         public void Setup()
         {
-            altUnityDriver = new AltUnityDriver(port: 13000);
-            mainMenuPage = new MainMenuPage(altUnityDriver);
+            altDriver = new AltDriver(port: 13000);
+            mainMenuPage = new MainMenuPage(altDriver);
             mainMenuPage.LoadScene();
         }
 
         [TearDown]
         public void Dispose()
         {
-            altUnityDriver.Stop();
+            altDriver.Stop();
             Thread.Sleep(1000);
         }
 
