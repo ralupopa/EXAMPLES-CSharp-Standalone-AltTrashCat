@@ -11,4 +11,3 @@ dotnet test  -- NUnit.TestOutputXml = "TestAlttrashCSharp"
 
 echo "==> Kill app"
 taskkill //PID $(tasklist | grep TrashCat.exe | awk '{print $2}') //T //F
-
