@@ -37,13 +37,15 @@ You can view a video of how to run the tests on MAC OS by clicking on the follow
 
 ## Run tests manually
 
-Check the dotnet SDK and runtime versions which are installed
+1. Check the dotnet SDK and runtime versions which are installed
 
 ```
 dotnet --info
 ```
 
-Move to TestAlttrashCSharp and execute
+2. Launch game from `App\TrashCatWindows\TrashCat.exe`
+
+3. Move to `TestAlttrashCSharp` and execute all tests
 
 ```
 dotnet test  -- NUnit.TestOutputXml = "TestAlttrashCSharp"
@@ -51,3 +53,17 @@ dotnet test  -- NUnit.TestOutputXml = "TestAlttrashCSharp"
 
 
 ! **Make sure to have the Alttester Desktop App closed, otherwise the test won't be able to connect to proper port.**
+
+## Run specific tests
+
+### Run all tests from a specific class / file
+
+```
+dotnet test --filter <test_class_name>
+```
+
+### Run only one test from a class
+
+```
+dotnet test --filter <test_class_name>.<test_name>
+```
