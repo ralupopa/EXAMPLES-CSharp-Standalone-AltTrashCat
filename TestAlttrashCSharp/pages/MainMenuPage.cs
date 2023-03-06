@@ -21,11 +21,10 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject CharacterName { get => Driver.WaitForObject(By.NAME, "CharName", timeout: 10); }
         public AltObject ThemeName { get => Driver.WaitForObject(By.NAME, "ThemeZone", timeout: 10); }
         public AltObject LeaderBoardText { get => Driver.WaitForObject(By.PATH, "/UICamera/Leaderboard/Background/Text", timeout: 10); }
-        public AltObject CloseLeaderBoardButton { get => Driver.WaitForObject(By.PATH, "/UICamera/Leaderboard/Background/Button", timeout: 10); }
+        public AltObject CloseLeaderBoardButton { get => Driver.WaitForObject(By.NAME, "Button", timeout: 10); }
         public AltObject MissionsText { get => Driver.WaitForObject(By.PATH, "/UICamera/Loadout/MissionPopup/MissionBackground/Text", timeout: 10); }
-        public List<AltObject> MissionsList { get => Driver.FindObjects(By.PATH,
-            "/UICamera/Loadout/MissionPopup/MissionBackground/MissionsContainer/Scroll View/Viewport/Content/MissionEntry(Clone)"); }
-        public AltObject CloseMissionsButton { get => Driver.WaitForObject(By.PATH, "/UICamera/Loadout/MissionPopup/MissionBackground/CloseButton", timeout: 10); }
+        public List<AltObject> MissionsList { get => Driver.FindObjects(By.NAME, "MissionEntry(Clone)"); }
+        public AltObject CloseMissionsButton { get => Driver.WaitForObject(By.NAME, "CloseButton", timeout: 10); }
         public AltObject StoreText { get => Driver.WaitForObject(By.NAME, "StoreTitle", timeout: 10); }
         public List<AltObject> StoreTabsList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/TabsSwitch/*"); }
         public AltObject ItemsTab { get => Driver.WaitForObject(By.NAME, "Item", timeout: 10); }
