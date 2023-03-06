@@ -50,5 +50,27 @@ namespace alttrashcat_tests_csharp.tests
             mainMenuPage.PressCloseMissions();
             Assert.True(mainMenuPage.IsDisplayed());
         }
+
+        [Test]
+        public void TestShowStore()
+        {
+            mainMenuPage.PressStore();
+            Assert.NotNull(mainMenuPage.StoreText);
+            Assert.AreEqual(mainMenuPage.GetStoreText(), "STORE");
+            Assert.AreEqual(4, mainMenuPage.StoreTabsList.Count);
+            Assert.True(mainMenuPage.StoreTabsAreDisplayed());
+            mainMenuPage.PressCloseStore();
+            Assert.True(mainMenuPage.IsDisplayed());
+        }
+        [Test]
+        public void TestShowSettings()
+        {
+            mainMenuPage.PressSettings();
+            Assert.NotNull(mainMenuPage.SettingsText);
+            Assert.AreEqual(mainMenuPage.GetSettingsText(), "SETTINGS");
+            Assert.True(mainMenuPage.SettingsSlidersAreDisplayed());
+            mainMenuPage.PressCloseSettings();
+            Assert.True(mainMenuPage.IsDisplayed());
+        }
     }
 }
