@@ -28,11 +28,6 @@ namespace alttrashcat_tests_csharp.tests
             altDriver.Stop();
             Thread.Sleep(1000);
         }
-        [OneTimeTearDown]
-        public void CleanUpData()
-        {
-            mainMenuPage.DeleteData();
-        }
 
         [Test]
         public void TestAccessStoreAndIncreaseCoins()
@@ -57,7 +52,7 @@ namespace alttrashcat_tests_csharp.tests
             mainMenuPage.PressNightTimeTheme();
             StringAssert.Contains("Night", mainMenuPage.GetThemeNameText());
 
-            CleanUpData();
+            mainMenuPage.DeleteData();
         }
     }
 }
