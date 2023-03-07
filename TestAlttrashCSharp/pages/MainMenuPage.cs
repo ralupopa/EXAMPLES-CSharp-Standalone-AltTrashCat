@@ -19,7 +19,7 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject MissionButton { get => Driver.WaitForObject(By.NAME, "MissionButton", timeout: 10); }
         public AltObject RunButton { get => Driver.WaitForObject(By.NAME, "StartButton", timeout: 10); }
         public AltObject CharacterName { get => Driver.WaitForObject(By.NAME, "CharName", timeout: 10); }
-        public AltObject ThemeName { get => Driver.WaitForObject(By.NAME, "ThemeZone", timeout: 10); }
+        public AltObject ThemeZone { get => Driver.WaitForObject(By.NAME, "ThemeZone", timeout: 10); }
         public AltObject LeaderBoardText { get => Driver.WaitForObject(By.PATH, "/UICamera/Leaderboard/Background/Text", timeout: 10); }
         public AltObject CloseLeaderBoardButton { get => Driver.WaitForObject(By.NAME, "Button", timeout: 10); }
         public AltObject MissionsText { get => Driver.WaitForObject(By.PATH, "/UICamera/Loadout/MissionPopup/MissionBackground/Text", timeout: 10); }
@@ -37,9 +37,15 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject MasterSlider { get => Driver.WaitForObject(By.NAME, "MasterSlider", timeout: 10); }
         public AltObject MusicSlider { get => Driver.WaitForObject(By.NAME, "MusicSlider", timeout: 10); }
         public AltObject MasterSFXSlider { get => Driver.WaitForObject(By.NAME, "MasterSFXSlider", timeout: 10); }
+        public AltObject ButtonRightChooseTheme { get => Driver.WaitForObject(By.NAME, "ButtonRight", timeout: 10); }
+        public AltObject ButtonLeftChooseTheme { get => Driver.WaitForObject(By.NAME, "ButtonLeft", timeout: 10); }
+        public AltObject ThemeName { get => Driver.WaitForObject(By.NAME, "ThemeName", timeout: 10); }
+        public AltObject DeleteDataButton { get => Driver.WaitForObject(By.NAME, "DeleteData", timeout: 10); }
+        public AltObject YESButton { get => Driver.WaitForObject(By.NAME, "YESButton", timeout: 10); }
         public bool IsDisplayed()
         {
-            if (StoreButton != null && LeaderBoardButton != null && SettingsButton != null && MissionButton != null && RunButton != null && CharacterName != null && ThemeName != null)
+            if (StoreButton != null && LeaderBoardButton != null && SettingsButton != null && MissionButton != null 
+            && RunButton != null && CharacterName != null && ThemeZone != null)
                 return true;
             return false;
         }
@@ -108,6 +114,27 @@ namespace alttrashcat_tests_csharp.pages
             && MasterSFXSlider != null)
                 return true;
             return false;
+        }
+        public bool ThemeButtonsAreDisplayed()
+        {
+            if (ButtonRightChooseTheme != null && ButtonLeftChooseTheme != null )
+                return true;
+            return false;
+        }
+        public void PressNightTimeTheme()
+        {
+            ButtonRightChooseTheme.Tap();
+        }
+        public string GetThemeNameText()
+        {
+            return ThemeName.GetText();
+        }
+        public void DeleteData()
+        {
+            PressSettings();
+            DeleteDataButton.Tap();
+            YESButton.Tap();
+            PressCloseSettings();
         }
     }
 }

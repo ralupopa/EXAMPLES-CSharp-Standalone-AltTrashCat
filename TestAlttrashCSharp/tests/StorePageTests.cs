@@ -19,6 +19,7 @@ namespace alttrashcat_tests_csharp.tests
             mainMenuPage = new MainMenuPage(altDriver);
             storePage = new StorePage(altDriver);
             storePage.LoadScene();
+            mainMenuPage.PressStore();
         }
 
         [TearDown]
@@ -27,6 +28,11 @@ namespace alttrashcat_tests_csharp.tests
             altDriver.Stop();
             Thread.Sleep(1000);
         }
+        [OneTimeTearDown]
+        public void CleanUpData()
+        {
+            mainMenuPage.DeleteData();
+        }
 
         [Test]
         public void TestAccessStoreAndIncreaseCoins()
@@ -34,15 +40,24 @@ namespace alttrashcat_tests_csharp.tests
             storePage.IsDisplayed();
             storePage.PressStoreToIncreaseCoins();
             var coinsText = storePage.GetCoinsCounterText();
-            Assert.True(Int32.Parse(coinsText) != 0);
-            Assert.AreEqual(storePage.GetBuyText(), "Buy");
+            Assert.True(Int32.Parse(coinsText) != 0); 
         }
         [Test]
         public void TestBuyNightTime()
         {
             storePage.PressThemes();
+            Assert.NotNull(storePage.OwnedButtonText);
+            Assert.NotNull(storePage.BuyButtonText);
             storePage.PressBuyNightTime();
-            Assert.AreEqual(storePage.GetBuyText(), "Owned");
+            mainMenuPage.PressCloseStore();
+            Assert.True(mainMenuPage.IsDisplayed());
+            mainMenuPage.ThemeButtonsAreDisplayed();
+            Assert.NotNull(mainMenuPage.ThemeName);
+            Assert.AreEqual(mainMenuPage.GetThemeNameText(), "Day");
+            mainMenuPage.PressNightTimeTheme();
+            StringAssert.Contains("Night", mainMenuPage.GetThemeNameText());
+
+            CleanUpData();
         }
     }
 }

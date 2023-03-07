@@ -10,10 +10,11 @@ namespace alttrashcat_tests_csharp.pages
         }
         public void LoadScene()
         {
-            Driver.LoadScene("Shop");
+            Driver.LoadScene("Main");
         }
         public AltObject Store { get => Driver.WaitForObject(By.NAME, "StoreTitle", timeout: 10); }
-        public AltObject BuyButton { get => Driver.WaitForObject(By.NAME, "BuyButton", timeout: 10); }
+        public AltObject OwnedButtonText { get => Driver.WaitForObject(By.PATH, "//BuyButton/Text[@text=Owned]", timeout: 10); }
+        public AltObject BuyButtonText { get => Driver.WaitForObject(By.PATH, "//BuyButton/Text[@text=BUY]", timeout: 10); }
         public AltObject CoinElement { get => Driver.WaitForObject(By.NAME, "Coin", timeout: 10); }
         public AltObject CoinsCounter { get => Driver.WaitForObject(By.NAME, "CoinsCounter", timeout: 10); }
         public AltObject PremiumCounter { get => Driver.WaitForObject(By.NAME, "Premium", timeout: 10); }
@@ -33,13 +34,10 @@ namespace alttrashcat_tests_csharp.pages
         {
             return CoinsCounter.GetText();
         }
-        public string GetBuyText()
-        {
-            return BuyButton.GetText();
-        }
         public void PressBuyNightTime()
         {
-            BuyButton.Tap();
+            var parentButton = BuyButtonText.getParent();
+            parentButton.Tap();
         }
         public void PressThemes()
         {
