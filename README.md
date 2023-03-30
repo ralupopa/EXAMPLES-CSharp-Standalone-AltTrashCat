@@ -17,7 +17,7 @@ The **TestAlttrashCSharp.csproj** has specified TargetFramework: **netcoreapp3.1
     Create a folder `TrashCatWindows` under `App`.
     The app is provided at [TrashCatWindows](https://altom.com/app/uploads/AltTester/TrashCat/TrashCatWindows.zip) and needs to be included unzipped under the App/TrashCatWindows/ folder.
 
-### Running the tests on Windows or MacOS
+# Running the tests on Windows or MacOS
 The tests are meant to be run on an Windows or MacOS device.
 
 To start the tests, depending of your OS run:
@@ -43,7 +43,11 @@ You can view a video of how to run the tests on MAC OS by clicking on the follow
 
 [![Youtube](http://img.youtube.com/vi/tr3_8YawBck/0.jpg)](https://www.youtube.com/embed/tr3_8YawBck "Youtube")
 
-## Run tests manually
+### NuGet package
+
+**This project already has the AltDriver inside (version 1.8.0), but otherwise would require to add [AltTester Driver](https://www.nuget.org/packages/AltTester-Driver) package in order to work.**
+
+# Run tests manually (with [dotnet CLI](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test))
 
 1. Check the dotnet SDK and runtime versions which are installed
 
@@ -53,16 +57,13 @@ dotnet --info
 
 2. Launch game from `App\TrashCatWindows\TrashCat.exe`
 
-3. Move to `TestAlttrashCSharp` and execute all tests
+3. Move to `TestAlttrashCSharp` and execute all tests (mention the output folder)
 
 ```
-dotnet test  -- NUnit.TestOutputXml = "TestAlttrashCSharp"
+dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory TestResults
 ```
-
 
 ! **Make sure to have the Alttester Desktop App closed, otherwise the test won't be able to connect to proper port.**
-
-## Run specific tests
 
 ### Run all tests from a specific class / file
 
@@ -76,6 +77,39 @@ dotnet test --filter <test_class_name>
 dotnet test --filter <test_class_name>.<test_name>
 ```
 
-### NuGet package
+```
+dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory TestResults --filter <test_class_name>.<test_name>
+```
 
-**This project already has the AltDriver inside (version 1.8.0), but otherwise would require to add [AltTester Driver](https://www.nuget.org/packages/AltTester-Driver) package in order to work.**
+# Run tests and generate XML, HTML test reports
+
+
+
+## Using [Nure](https://www.nuget.org/packages/nure)
+
+### Automatic script
+
+```
+nure_run_tests_generate_report.sh
+```
+
+1. Launch game from `App\TrashCatWindows\TrashCat.exe`
+
+2. Move to `TestAlttrashCSharp`
+
+3. Execute all tests and generate an XML output file with results
+
+```
+nunit3-console bin/Debug/netcoreapp3.1/TestAlttrashCSharp.dll --work=TestResults
+```
+
+eg: execute one test by name:
+
+```
+nunit3-console bin/Debug/netcoreapp3.1/TestAlttrashCSharp.dll --work=TestResults --where "name=TestNameHere"
+```
+
+3. Transform XML to HTML report
+```
+nure TestResults/TestResult.xml -o TestResults --html
+``` 
