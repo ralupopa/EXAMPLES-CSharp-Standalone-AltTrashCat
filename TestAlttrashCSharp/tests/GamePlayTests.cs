@@ -3,9 +3,11 @@ using System.Threading;
 using Altom.AltDriver;
 using alttrashcat_tests_csharp.pages;
 using NUnit.Framework;
-
+using NUnit.Allure.Core;
 namespace alttrashcat_tests_csharp.tests
 {
+    [TestFixture]
+    [AllureNUnit]
     public class GamePlayTests
     {
         AltDriver altDriver;

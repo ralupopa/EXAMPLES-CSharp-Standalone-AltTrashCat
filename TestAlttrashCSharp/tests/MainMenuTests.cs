@@ -3,8 +3,12 @@ using alttrashcat_tests_csharp.pages;
 using System;
 using System.Threading;
 using NUnit.Framework;
+using NUnit.Allure.Core;
 namespace alttrashcat_tests_csharp.tests
 {
+    
+    [TestFixture]
+    [AllureNUnit]
     public class MainMenuTests
     {
         AltDriver altDriver;

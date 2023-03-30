@@ -83,7 +83,31 @@ dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory T
 
 # Run tests and generate XML, HTML test reports
 
+## Using [Allure](https://docs.qameta.io/allure-report/)
 
+### Automatic script
+
+```
+allure_run_tests_generate_report.sh
+```
+
+### Manual Steps
+
+1. Launch game from `App\TrashCatWindows\TrashCat.exe`
+
+2. Move to `TestAlttrashCSharp`
+
+3. Execute all tests and generate output specific for NUnit Allure adapter
+
+```
+dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory allure-results
+```
+
+4. Generate test results report
+
+```
+allure serve allure-results
+```
 
 ## Using [Nure](https://www.nuget.org/packages/nure)
 
@@ -92,6 +116,8 @@ dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory T
 ```
 nure_run_tests_generate_report.sh
 ```
+
+### Manual Steps
 
 1. Launch game from `App\TrashCatWindows\TrashCat.exe`
 

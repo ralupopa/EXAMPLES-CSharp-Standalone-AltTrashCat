@@ -3,9 +3,11 @@ using System.Threading;
 using Altom.AltDriver;
 using alttrashcat_tests_csharp.pages;
 using NUnit.Framework;
-
+using NUnit.Allure.Core;
 namespace alttrashcat_tests_csharp.tests
 {
+    [TestFixture]
+    [AllureNUnit]
     public class StorePageTests
     {
         AltDriver altDriver;
@@ -35,7 +37,7 @@ namespace alttrashcat_tests_csharp.tests
             storePage.IsDisplayed();
             storePage.PressStoreToIncreaseCoins();
             var coinsText = storePage.GetCoinsCounterText();
-            Assert.True(Int32.Parse(coinsText) != 0); 
+            Assert.True(Int32.Parse(coinsText) != 0);
         }
         [Test]
         public void TestBuyNightTime()
