@@ -111,6 +111,27 @@ dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory a
 allure serve allure-results
 ```
 
+### Save Allure report in one HTML file (easy to share)
+
+After generating allure-report, when we need to save everything into one html file (to share it): install an external package which builds allure generated folder into one html file.
+
+Requirements: Python 3.6+
+
+```
+pip install allure-combine
+```
+
+[allure-combine package implementation and documentation](https://github.com/MihanEntalpo/allure-single-html-file)
+
+Then each time after running test, when want to save allure-report in one sharable HTML file:
+```
+allure generate -o allure-results-html
+```
+
+```
+allure-combine ./allure-results-html
+```
+
 ## Using [Nure](https://www.nuget.org/packages/nure)
 
 Read [Setup Nure](setup_nure.md) as pre-requisite.
