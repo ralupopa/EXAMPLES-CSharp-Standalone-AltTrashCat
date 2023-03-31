@@ -111,6 +111,8 @@ allure serve allure-results
 
 ## Using [Nure](https://www.nuget.org/packages/nure)
 
+Read [Setup Nure](setup_nure.md) as pre-requisite.
+
 ### Automatic script
 
 ```
