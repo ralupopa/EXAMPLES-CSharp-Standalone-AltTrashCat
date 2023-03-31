@@ -4,10 +4,13 @@ using Altom.AltDriver;
 using alttrashcat_tests_csharp.pages;
 using NUnit.Framework;
 using NUnit.Allure.Core;
+using Allure.Commons;
+using NUnit.Allure.Attributes;
 namespace alttrashcat_tests_csharp.tests
 {
     [TestFixture]
     [AllureNUnit]
+    [AllureSuite("Game Play")]
     public class GamePlayTests
     {
         AltDriver altDriver;
@@ -29,11 +32,13 @@ namespace alttrashcat_tests_csharp.tests
 
         }
         [Test]
+        [AllureSeverity(SeverityLevel.blocker)]
         public void TestGamePlayDisplayedCorrectly()
         {
             Assert.True(gamePlayPage.IsDisplayed());
         }
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestGameCanBePausedAndResumed()
         {
             gamePlayPage.PressPause();
@@ -42,6 +47,7 @@ namespace alttrashcat_tests_csharp.tests
             Assert.True(gamePlayPage.IsDisplayed());
         }
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestGameCanBePausedAndStopped()
         {
             gamePlayPage.PressPause();
@@ -49,12 +55,14 @@ namespace alttrashcat_tests_csharp.tests
             Assert.True(mainMenuPage.IsDisplayed());
         }
         [Test]
+        [AllureSeverity(SeverityLevel.minor)]
         public void TestAvoidingObstacles()
         {
             gamePlayPage.AvoidObstacles(10);
             Assert.True(gamePlayPage.GetCurrentLife() > 0);
         }
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestPlayerDiesWhenObstacleNotAvoided()
         {
             float timeout = 20;

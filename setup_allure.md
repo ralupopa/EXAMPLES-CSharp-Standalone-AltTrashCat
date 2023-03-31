@@ -35,11 +35,11 @@ dotnet add package NUnit.Allure --version 1.2.1.1
 
 # 5. Create `allureConfig.json` at same level with < TestProjectName>.dll
 
-< TestProjectName>.dll is found /bin/Debug/netcoreapp3.1
+Eg: < TestProjectName>.dll is found in `/bin/Debug/netcoreapp3.1`
 
 Create `allureConfig.json` file with content as exemplified in [allure-csharp repository](https://github.com/allure-framework/allure-csharp/blob/main/Allure.NUnit/allureConfig.json)
 
-Important to provide a FULL path to the `allure-results` folder. On windows use the double \\.
+Important to provide a FULL path to the `allure-results` folder. On windows use the double "\\".
 
 eg: 
 ```

@@ -4,10 +4,14 @@ using Altom.AltDriver;
 using alttrashcat_tests_csharp.pages;
 using NUnit.Framework;
 using NUnit.Allure.Core;
+using Allure.Commons;
+using NUnit.Allure.Attributes;
+
 namespace alttrashcat_tests_csharp.tests
 {
     [TestFixture]
     [AllureNUnit]
+    [AllureSuite("Store")]
     public class StorePageTests
     {
         AltDriver altDriver;
@@ -32,6 +36,7 @@ namespace alttrashcat_tests_csharp.tests
         }
 
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestAccessStoreAndIncreaseCoins()
         {
             storePage.IsDisplayed();
@@ -39,7 +44,8 @@ namespace alttrashcat_tests_csharp.tests
             var coinsText = storePage.GetCoinsCounterText();
             Assert.True(Int32.Parse(coinsText) != 0);
         }
-        [Test]
+        [Test(Author = "Ralu", Description = "Can Buy Night theme")]
+        [AllureSeverity(SeverityLevel.normal)]
         public void TestBuyNightTime()
         {
             storePage.PressThemes();

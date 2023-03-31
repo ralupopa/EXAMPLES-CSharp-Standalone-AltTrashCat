@@ -4,11 +4,14 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Allure.Core;
+using Allure.Commons;
+using NUnit.Allure.Attributes;
 namespace alttrashcat_tests_csharp.tests
 {
     
     [TestFixture]
     [AllureNUnit]
+    [AllureSuite("Main Menu")]
     public class MainMenuTests
     {
         AltDriver altDriver;
@@ -29,12 +32,14 @@ namespace alttrashcat_tests_csharp.tests
         }
 
         [Test]
+        [AllureSeverity(SeverityLevel.blocker)]
         public void TestMainMenuPageLoadedCorrectly()
         {
             Assert.True(mainMenuPage.IsDisplayed());
         }
 
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestShowLeaderboard()
         {
             mainMenuPage.PressLeaderboard();
@@ -45,6 +50,7 @@ namespace alttrashcat_tests_csharp.tests
         }
 
         [Test]
+        [AllureSeverity(SeverityLevel.minor)]
         public void TestShowMissionsContainsTwo()
         {
             mainMenuPage.PressMissions();
@@ -56,6 +62,7 @@ namespace alttrashcat_tests_csharp.tests
         }
 
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestShowStore()
         {
             mainMenuPage.PressStore();
@@ -67,6 +74,7 @@ namespace alttrashcat_tests_csharp.tests
             Assert.True(mainMenuPage.IsDisplayed());
         }
         [Test]
+        [AllureSeverity(SeverityLevel.critical)]
         public void TestShowSettings()
         {
             mainMenuPage.PressSettings();

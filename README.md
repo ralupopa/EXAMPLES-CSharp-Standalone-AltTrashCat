@@ -78,7 +78,7 @@ dotnet test --filter <test_class_name>.<test_name>
 ```
 
 ```
-dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory TestResults --filter <test_class_name>.<test_name>
+dotnet test --results-directory TestResults --filter <test_class_name>.<test_name>
 ```
 
 # Run tests and generate XML, HTML test reports
@@ -87,7 +87,7 @@ dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory T
 
 Read [Setup Allure](setup_allure.md) as pre-requisite.
 
-### Automatic script
+### [Automatic script](allure_run_tests_generate_report.sh)
 
 ```
 allure_run_tests_generate_report.sh
@@ -115,7 +115,7 @@ allure serve allure-results
 
 Read [Setup Nure](setup_nure.md) as pre-requisite.
 
-### Automatic script
+### [Automatic script](nure_run_tests_generate_report.sh)
 
 ```
 nure_run_tests_generate_report.sh

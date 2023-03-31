@@ -4,10 +4,13 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 using NUnit.Allure.Core;
+using Allure.Commons;
+using NUnit.Allure.Attributes;
 namespace alttrashcat_tests_csharp.tests
 {
     [TestFixture]
     [AllureNUnit]
+    [AllureSuite("Start")]
     public class StartPageTests
     {
         private AltDriver altDriver;
@@ -23,11 +26,13 @@ namespace alttrashcat_tests_csharp.tests
 
         }
         [Test]
+        [AllureSeverity(SeverityLevel.blocker)]
         public void TestStartPageLoadedCorrectly()
         {
             Assert.True(startPage.IsDisplayed());
         }
         [Test]
+        [AllureSeverity(SeverityLevel.blocker)]
         public void TestStartButtonLoadMainMenu()
         {
             startPage.PressStart();
