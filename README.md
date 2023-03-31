@@ -85,6 +85,8 @@ dotnet test -- NUnit.TestOutputXml  = "TestAlttrashCSharp" --results-directory T
 
 ## Using [Allure](https://docs.qameta.io/allure-report/)
 
+Read [Setup Allure](setup_allure.md) as pre-requisite.
+
 ### Automatic script
 
 ```
