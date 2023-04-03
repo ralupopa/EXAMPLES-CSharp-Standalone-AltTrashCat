@@ -50,19 +50,22 @@ namespace alttrashcat_tests_csharp.tests
         [AllureSeverity(SeverityLevel.normal)]
         public void TestBuyNightTime()
         {
-            storePage.PressThemes();
-            Assert.NotNull(storePage.OwnedButtonText);
-            Assert.NotNull(storePage.BuyButtonText);
-            storePage.PressBuy();
-            storePage.PressCloseStore();
-            Assert.True(mainMenuPage.IsDisplayed());
-            mainMenuPage.ButtonsLeftRightAreDisplayed();
-            Assert.NotNull(mainMenuPage.ThemeName);
-            Assert.AreEqual(mainMenuPage.GetThemeNameText(), "Day");
-            mainMenuPage.PressButtonRight();
-            StringAssert.Contains("Night", mainMenuPage.GetThemeNameText());
+            Assert.Multiple(() =>
+            {
+                storePage.PressThemes();
+                Assert.NotNull(storePage.OwnedButtonText);
+                Assert.NotNull(storePage.BuyButtonText);
+                storePage.PressBuy();
+                storePage.PressCloseStore();
+                Assert.True(mainMenuPage.IsDisplayed());
+                mainMenuPage.ButtonsLeftRightAreDisplayed();
+                Assert.NotNull(mainMenuPage.ThemeName);
+                Assert.AreEqual(mainMenuPage.GetThemeNameText(), "Day");
+                mainMenuPage.PressButtonRight();
+                StringAssert.Contains("Night", mainMenuPage.GetThemeNameText());
 
-            mainMenuPage.DeleteData();
+                mainMenuPage.DeleteData();
+            });
         }
 
         [Test]
@@ -102,24 +105,30 @@ namespace alttrashcat_tests_csharp.tests
             Assert.True(storePage.StoreTabsAreDisplayed());
             storePage.PressThemes();
             Assert.AreEqual(2, storePage.ThemesList.Count);
+
+            storePage.PressCloseStore();
         }
 
         [Test]
         [AllureSeverity(SeverityLevel.normal)]
-        public void TestBuyCharacters()
+        public void TestBuyCharacterRubbishRaccoon()
         {
-            storePage.PressCharacters();
-            Assert.NotNull(storePage.OwnedButtonText);
-            Assert.NotNull(storePage.BuyButtonText);
-            storePage.PressBuy();
-            storePage.PressCloseStore();
-            Assert.True(mainMenuPage.IsDisplayed());
-            Assert.True(mainMenuPage.ButtonsLeftRightAreDisplayed());
-            Assert.AreEqual(mainMenuPage.GetCharacterNameText(), "Trash Cat");
-            mainMenuPage.PressButtonRight();
-            StringAssert.Contains("Rubbish Raccoon", mainMenuPage.GetCharacterNameText());
+            Assert.Multiple(() =>
+            {
+                storePage.PressCharacters();
+                Assert.NotNull(storePage.OwnedButtonText);
+                Assert.NotNull(storePage.BuyButtonText);
+                storePage.PressBuy();
+                storePage.PressCloseStore();
+                Assert.True(mainMenuPage.IsDisplayed());
+                Assert.True(mainMenuPage.ButtonsLeftRightAreDisplayed());
+                Assert.AreEqual(mainMenuPage.GetCharacterNameText(), "Trash Cat");
+                mainMenuPage.PressButtonRight();
+                StringAssert.Contains("Rubbish Raccoon", mainMenuPage.GetCharacterNameText());
 
-            mainMenuPage.DeleteData();
+                mainMenuPage.DeleteData();
+            });
         }
+
     }
 }
