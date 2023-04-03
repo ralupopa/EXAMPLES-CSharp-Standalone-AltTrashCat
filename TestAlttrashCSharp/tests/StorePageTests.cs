@@ -94,7 +94,8 @@ namespace alttrashcat_tests_csharp.tests
             storePage.IsDisplayed();
             Assert.True(storePage.StoreTabsAreDisplayed());
             storePage.PressAccessories();
-            Assert.AreEqual(2, storePage.AccessoriesList.Count);
+            Assert.AreEqual(5, storePage.AccessoriesList.Count);
+            Assert.AreEqual(2, storePage.AccessoriesHeaderCharacter.Count);
         }
 
         [Test]
@@ -125,6 +126,27 @@ namespace alttrashcat_tests_csharp.tests
                 Assert.AreEqual(mainMenuPage.GetCharacterNameText(), "Trash Cat");
                 mainMenuPage.PressButtonRight();
                 StringAssert.Contains("Rubbish Raccoon", mainMenuPage.GetCharacterNameText());
+
+                mainMenuPage.DeleteData();
+            });
+        }
+
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestBuyAllAccessories()
+        {
+            Assert.Multiple(() =>
+            {
+                storePage.PressAccessories();
+                foreach (AltObject button in storePage.BuyButtonList)
+                {
+                    button.Tap();
+                }
+
+                storePage.PressCloseStore();
+                Assert.True(mainMenuPage.IsDisplayed());
+                Assert.True(mainMenuPage.AccessoriesSelectorIsDisplayed());
+                Assert.True(mainMenuPage.ButtonsTopBottomAreDisplayed());
 
                 mainMenuPage.DeleteData();
             });

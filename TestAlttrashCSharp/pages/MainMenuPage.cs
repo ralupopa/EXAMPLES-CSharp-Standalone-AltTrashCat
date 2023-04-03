@@ -32,6 +32,9 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject MasterSFXSlider { get => Driver.WaitForObject(By.NAME, "MasterSFXSlider", timeout: 10); }
         public AltObject ButtonRight { get => Driver.WaitForObject(By.NAME, "ButtonRight", timeout: 10); }
         public AltObject ButtonLeft { get => Driver.WaitForObject(By.NAME, "ButtonLeft", timeout: 10); }
+        public AltObject ButtonTop { get => Driver.WaitForObject(By.NAME, "ButtonTop", timeout: 10); }
+        public AltObject ButtonBottom { get => Driver.WaitForObject(By.NAME, "ButtonBottom", timeout: 10); }
+        public AltObject AccessoriesSelector { get => Driver.WaitForObject(By.NAME, "AccessoriesSelector", timeout: 10); }
         public AltObject ThemeName { get => Driver.WaitForObject(By.NAME, "ThemeName", timeout: 10); }
         public AltObject DeleteDataButton { get => Driver.WaitForObject(By.NAME, "DeleteData", timeout: 10); }
         public AltObject YESButton { get => Driver.WaitForObject(By.NAME, "YESButton", timeout: 10); }
@@ -103,6 +106,18 @@ namespace alttrashcat_tests_csharp.pages
         public void PressButtonRight()
         {
             ButtonRight.Tap();
+        }
+        public bool ButtonsTopBottomAreDisplayed()
+        {
+            if (ButtonTop != null && ButtonBottom != null )
+                return true;
+            return false;
+        }
+        public bool AccessoriesSelectorIsDisplayed()
+        {
+            if (AccessoriesSelector != null)
+                return true;
+            return false;
         }
         public string GetThemeNameText()
         {

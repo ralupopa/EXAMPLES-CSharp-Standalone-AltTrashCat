@@ -17,6 +17,7 @@ namespace alttrashcat_tests_csharp.pages
         public List<AltObject> StoreTabsList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/TabsSwitch/*"); }
         public AltObject OwnedButtonText { get => Driver.WaitForObject(By.PATH, "//BuyButton/Text[@text=Owned]", timeout: 10); }
         public AltObject BuyButtonText { get => Driver.WaitForObject(By.PATH, "//BuyButton/Text[@text=BUY]", timeout: 10); }
+        public List<AltObject> BuyButtonList { get => Driver.FindObjects(By.NAME, "BuyButton"); }
         public AltObject CoinElement { get => Driver.WaitForObject(By.NAME, "Coin", timeout: 10); }
         public AltObject CoinsCounter { get => Driver.WaitForObject(By.NAME, "CoinsCounter", timeout: 10); }
         public AltObject PremiumCounter { get => Driver.WaitForObject(By.NAME, "Premium", timeout: 10); }
@@ -27,7 +28,8 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject CloseStoreButton { get => Driver.WaitForObject(By.PATH, "/Canvas/Background/Button", timeout: 10); }
         public List<AltObject> ItemsList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/ItemsList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name"); }
         public List<AltObject> CharactersList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name");}
-        public List<AltObject> AccessoriesList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterAccessoriesList/Container/Header(Clone)/Name"); }
+        public List<AltObject> AccessoriesList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterAccessoriesList/Container/ItemEntry(Clone)"); }
+        public List<AltObject> AccessoriesHeaderCharacter { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterAccessoriesList/Container/Header(Clone)"); }
         public List<AltObject> ThemesList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/ThemeList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name"); }
         public bool IsDisplayed()
         {
