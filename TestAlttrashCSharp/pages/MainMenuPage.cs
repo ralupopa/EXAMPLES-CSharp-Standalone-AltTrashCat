@@ -30,8 +30,8 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject MasterSlider { get => Driver.WaitForObject(By.NAME, "MasterSlider", timeout: 10); }
         public AltObject MusicSlider { get => Driver.WaitForObject(By.NAME, "MusicSlider", timeout: 10); }
         public AltObject MasterSFXSlider { get => Driver.WaitForObject(By.NAME, "MasterSFXSlider", timeout: 10); }
-        public AltObject ButtonRightChooseTheme { get => Driver.WaitForObject(By.NAME, "ButtonRight", timeout: 10); }
-        public AltObject ButtonLeftChooseTheme { get => Driver.WaitForObject(By.NAME, "ButtonLeft", timeout: 10); }
+        public AltObject ButtonRight { get => Driver.WaitForObject(By.NAME, "ButtonRight", timeout: 10); }
+        public AltObject ButtonLeft { get => Driver.WaitForObject(By.NAME, "ButtonLeft", timeout: 10); }
         public AltObject ThemeName { get => Driver.WaitForObject(By.NAME, "ThemeName", timeout: 10); }
         public AltObject DeleteDataButton { get => Driver.WaitForObject(By.NAME, "DeleteData", timeout: 10); }
         public AltObject YESButton { get => Driver.WaitForObject(By.NAME, "YESButton", timeout: 10); }
@@ -94,19 +94,24 @@ namespace alttrashcat_tests_csharp.pages
                 return true;
             return false;
         }
-        public bool ThemeButtonsAreDisplayed()
+        public bool ButtonsLeftRightAreDisplayed()
         {
-            if (ButtonRightChooseTheme != null && ButtonLeftChooseTheme != null )
+            if (ButtonRight != null && ButtonLeft != null )
                 return true;
             return false;
         }
-        public void PressNightTimeTheme()
+        public void PressButtonRight()
         {
-            ButtonRightChooseTheme.Tap();
+            ButtonRight.Tap();
         }
         public string GetThemeNameText()
         {
             return ThemeName.GetText();
+        }
+
+        public string GetCharacterNameText()
+        {
+            return CharacterName.GetText();
         }
         public void DeleteData()
         {

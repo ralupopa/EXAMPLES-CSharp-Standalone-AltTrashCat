@@ -53,17 +53,73 @@ namespace alttrashcat_tests_csharp.tests
             storePage.PressThemes();
             Assert.NotNull(storePage.OwnedButtonText);
             Assert.NotNull(storePage.BuyButtonText);
-            storePage.PressBuyNightTime();
+            storePage.PressBuy();
             storePage.PressCloseStore();
             Assert.True(mainMenuPage.IsDisplayed());
-            mainMenuPage.ThemeButtonsAreDisplayed();
+            mainMenuPage.ButtonsLeftRightAreDisplayed();
             Assert.NotNull(mainMenuPage.ThemeName);
             Assert.AreEqual(mainMenuPage.GetThemeNameText(), "Day");
-            mainMenuPage.PressNightTimeTheme();
+            mainMenuPage.PressButtonRight();
             StringAssert.Contains("Night", mainMenuPage.GetThemeNameText());
 
             mainMenuPage.DeleteData();
         }
 
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestCheckItemsList()
+        {
+            storePage.IsDisplayed();
+            Assert.True(storePage.StoreTabsAreDisplayed());
+            Assert.AreEqual(4, storePage.ItemsList.Count);
+        }
+
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestCheckCharactersList()
+        {
+            storePage.IsDisplayed();
+            Assert.True(storePage.StoreTabsAreDisplayed());
+            storePage.PressCharacters();
+            Assert.AreEqual(2, storePage.CharactersList.Count);
+        }
+
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestCheckAccessoriesList()
+        {
+            storePage.IsDisplayed();
+            Assert.True(storePage.StoreTabsAreDisplayed());
+            storePage.PressAccessories();
+            Assert.AreEqual(2, storePage.AccessoriesList.Count);
+        }
+
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestCheckThemesList()
+        {
+            storePage.IsDisplayed();
+            Assert.True(storePage.StoreTabsAreDisplayed());
+            storePage.PressThemes();
+            Assert.AreEqual(2, storePage.ThemesList.Count);
+        }
+
+        [Test]
+        [AllureSeverity(SeverityLevel.normal)]
+        public void TestBuyCharacters()
+        {
+            storePage.PressCharacters();
+            Assert.NotNull(storePage.OwnedButtonText);
+            Assert.NotNull(storePage.BuyButtonText);
+            storePage.PressBuy();
+            storePage.PressCloseStore();
+            Assert.True(mainMenuPage.IsDisplayed());
+            Assert.True(mainMenuPage.ButtonsLeftRightAreDisplayed());
+            Assert.AreEqual(mainMenuPage.GetCharacterNameText(), "Trash Cat");
+            mainMenuPage.PressButtonRight();
+            StringAssert.Contains("Rubbish Raccoon", mainMenuPage.GetCharacterNameText());
+
+            mainMenuPage.DeleteData();
+        }
     }
 }

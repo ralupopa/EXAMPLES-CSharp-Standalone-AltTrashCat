@@ -25,6 +25,10 @@ namespace alttrashcat_tests_csharp.pages
         public AltObject CharactersTab { get => Driver.WaitForObject(By.NAME, "Character", timeout: 10); }
         public AltObject AccessoriesTab { get => Driver.WaitForObject(By.NAME, "Accesories", timeout: 10); }
         public AltObject CloseStoreButton { get => Driver.WaitForObject(By.PATH, "/Canvas/Background/Button", timeout: 10); }
+        public List<AltObject> ItemsList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/ItemsList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name"); }
+        public List<AltObject> CharactersList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name");}
+        public List<AltObject> AccessoriesList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/CharacterAccessoriesList/Container/Header(Clone)/Name"); }
+        public List<AltObject> ThemesList { get => Driver.FindObjects(By.PATH, "/Canvas/Background/ThemeList/Container/ItemEntry(Clone)/NamePriceButtonZone/Name"); }
         public bool IsDisplayed()
         {
             if (Store != null && CoinElement != null 
@@ -48,10 +52,20 @@ namespace alttrashcat_tests_csharp.pages
         {
             return CoinsCounter.GetText();
         }
-        public void PressBuyNightTime()
+        public void PressBuy()
         {
             var parentButton = BuyButtonText.getParent();
             parentButton.Tap();
+        }
+
+        public void PressCharacters()
+        {
+            CharactersTab.Tap();
+        }
+
+        public void PressAccessories()
+        {
+            AccessoriesTab.Tap();
         }
         public void PressThemes()
         {
