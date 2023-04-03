@@ -16,11 +16,13 @@ namespace alttrashcat_tests_csharp.tests
     {
         AltDriver altDriver;
         MainMenuPage mainMenuPage;
+        StorePage storePage;
         [SetUp]
         public void Setup()
         {
             altDriver = new AltDriver(port: 13000);
             mainMenuPage = new MainMenuPage(altDriver);
+            storePage = new StorePage(altDriver);
             mainMenuPage.LoadScene();
         }
 
@@ -66,11 +68,12 @@ namespace alttrashcat_tests_csharp.tests
         public void TestShowStore()
         {
             mainMenuPage.PressStore();
-            Assert.NotNull(mainMenuPage.StoreText);
-            Assert.AreEqual(mainMenuPage.GetStoreText(), "STORE");
-            Assert.AreEqual(4, mainMenuPage.StoreTabsList.Count);
-            Assert.True(mainMenuPage.StoreTabsAreDisplayed());
-            mainMenuPage.PressCloseStore();
+
+            Assert.NotNull(storePage.StoreText);
+            Assert.AreEqual(storePage.GetStoreText(), "STORE");
+            Assert.AreEqual(4, storePage.StoreTabsList.Count);
+            Assert.True(storePage.StoreTabsAreDisplayed());
+            storePage.PressCloseStore();
             Assert.True(mainMenuPage.IsDisplayed());
         }
         [Test]

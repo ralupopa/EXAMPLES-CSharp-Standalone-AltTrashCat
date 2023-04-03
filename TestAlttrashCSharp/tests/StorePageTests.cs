@@ -26,6 +26,7 @@ namespace alttrashcat_tests_csharp.tests
             storePage = new StorePage(altDriver);
             storePage.LoadScene();
             mainMenuPage.PressStore();
+            storePage.PressStoreToIncreaseCoins();
         }
 
         [TearDown]
@@ -44,6 +45,7 @@ namespace alttrashcat_tests_csharp.tests
             var coinsText = storePage.GetCoinsCounterText();
             Assert.True(Int32.Parse(coinsText) != 0);
         }
+
         [Test(Author = "Ralu", Description = "Can Buy Night theme")]
         [AllureSeverity(SeverityLevel.normal)]
         public void TestBuyNightTime()
@@ -52,7 +54,7 @@ namespace alttrashcat_tests_csharp.tests
             Assert.NotNull(storePage.OwnedButtonText);
             Assert.NotNull(storePage.BuyButtonText);
             storePage.PressBuyNightTime();
-            mainMenuPage.PressCloseStore();
+            storePage.PressCloseStore();
             Assert.True(mainMenuPage.IsDisplayed());
             mainMenuPage.ThemeButtonsAreDisplayed();
             Assert.NotNull(mainMenuPage.ThemeName);
@@ -62,5 +64,6 @@ namespace alttrashcat_tests_csharp.tests
 
             mainMenuPage.DeleteData();
         }
+
     }
 }
