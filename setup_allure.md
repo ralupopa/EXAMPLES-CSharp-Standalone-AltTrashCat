@@ -31,7 +31,7 @@ dotnet add package NUnit.Allure --version 1.2.1.1
 
 `alure-results` will be the output folder for tests execution; because of NUnit.Allure adapter this output will be in format useful for Allure to interpret and use further when creating the HTML report.
 
-`allure-report` will be the outut folder for HTML report served by allure.
+`allure-report` will be the output folder for HTML report served by allure.
 
 # 5. Create `allureConfig.json` at same level with < TestProjectName>.dll
 
