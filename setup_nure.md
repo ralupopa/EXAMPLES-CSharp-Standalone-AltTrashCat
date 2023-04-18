@@ -19,7 +19,7 @@ nuget install NUnit.ConsoleRunner
 eg: command to execute tests and generate XML
 
 ```
-nunit3-console bin/Debug/netcoreapp3.1/TestAlttrashCSharp.dll - -work=TestResults
+nunit3-console bin/Debug/netcoreapp3.1/TestAlttrashCSharp.dll --work=TestResults
 ```
 
 # 3. Install [Nure](https://www.nuget.org/packages/nure/)
